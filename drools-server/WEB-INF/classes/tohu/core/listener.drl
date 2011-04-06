@@ -1,0 +1,17 @@
+package org.tohu.listener
+
+import org.tohu.listener.DebugAgendaEventListener;
+import org.tohu.listener.ListenerManager;
+
+
+rule "add Rule listener"
+no-loop
+when
+	not(ListenerManager()); 
+then
+	DebugAgendaEventListener listener = new DebugAgendaEventListener();
+	drools.getKnowledgeRuntime().addEventListener(listener);
+	ListenerManager manager = new ListenerManager();
+	manager.setListenersRegistered(true);
+	insert(manager);
+end

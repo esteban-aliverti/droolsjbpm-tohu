@@ -1,0 +1,188 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author tohu-loader 
+ *
+ * (Notice included by creating a file called Copyright.drl in the import directory)
+ */
+package org.tohu.examples.loyalty.loyalty_complex_app;
+
+import java.util.Calendar;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Answer;
+import org.tohu.Questionnaire;
+import org.tohu.support.TohuDataItemObject;
+
+import org.tohu.examples.loyalty.*;
+
+rule "Branch JointMCGroupDataItems"
+salience 75
+no-loop
+when
+	pe1 : Question(id == "mochaCoffeeJoint"  );
+	Answer (questionId == pe1.id , value == "true");
+	q : Questionnaire(items not contains "JointMCGroupDataItems");
+then
+	if (q.isBranched() == false) {
+		q.navigationBranch(new String[]{"JointMCGroupDataItems"}, "JointMCGroupDataItems");
+	}
+	else {
+		q.appendItem("JointMCGroupDataItems", q.getActiveItem());
+	}
+	update(q);
+end
+
+rule "JointMCGroupDataItems"
+dialect "mvel"
+no-loop
+when
+	pe1 : Question(id == "mochaCoffeeJoint" , answer == "true");
+then
+	Group aGroup = new Group("JointMCGroupDataItems");
+	aGroup.setLabel("Please specify the loyalty program details.");
+	aGroup.setItems({"JointMCGroup"});
+	insertLogical(aGroup);
+end
+
+rule "JointMCGroup"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointMCGroupDataItems");
+then
+	Group aGroup = new Group("JointMCGroup");
+	aGroup.setLabel("8");
+	aGroup.setItems({
+		"jmcMembershipNumber",
+		"jmcMembershipName",
+		"jmcSpecialOffers"});
+	insertLogical(aGroup);
+end
+
+rule "jmcMembershipNumber"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointMCGroup");
+then
+	Question aQuestion = new Question("jmcMembershipNumber");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Membership number");
+	insertLogical(aQuestion);
+end
+
+rule "jmcMembershipName"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointMCGroup");
+then
+	Question aQuestion = new Question("jmcMembershipName");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Membership name");
+	insertLogical(aQuestion);
+end
+
+rule "jmcSpecialOffers"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointMCGroup");
+then
+	Question aQuestion = new Question("jmcSpecialOffers");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setPreLabel("Do you want to receive combined special offers?");
+	insertLogical(aQuestion);
+end
+
+rule "Create PointsTotal"
+dialect "mvel"
+no-loop
+salience 100
+then
+	TohuDataItemObject aTohuDataItemObject = new TohuDataItemObject("PointsTotal");
+	aTohuDataItemObject.setAnswerType(Question.TYPE_NUMBER);
+	aTohuDataItemObject.setCategory("Totals");
+	aTohuDataItemObject.setName("Total Points");
+	insert(aTohuDataItemObject);
+end
+
+declare TempPointsTotal
+	number : Number
+end
+
+rule "Function PointsTotal"
+no-loop
+when
+	$total : Number()
+		from accumulate (TohuDataItemObject(category == "Points", answered == true, $value : numberAnswer),
+ sum ( $value ) )
+then
+	TempPointsTotal temp = new TempPointsTotal();
+	temp.setNumber($total);
+	insert(temp);
+end
+
+rule "Assign PointsTotal"
+no-loop
+when
+	$impact : TohuDataItemObject(id == "PointsTotal");
+	$v : TempPointsTotal();
+then
+	$impact.setAnswer(new Long($v.getNumber().longValue()));
+	retract($v);
+	update($impact);
+end
+
+rule "Create CardType"
+dialect "mvel"
+no-loop
+salience 100
+then
+	TohuDataItemObject aTohuDataItemObject = new TohuDataItemObject("CardType");
+	aTohuDataItemObject.setAnswerType(Question.TYPE_TEXT);
+	aTohuDataItemObject.setAnswer("Standard");
+	aTohuDataItemObject.setCategory("Membership");
+	aTohuDataItemObject.setName("Standard Membership");
+	insert(aTohuDataItemObject);
+end
+
+rule "CardType149"
+dialect "mvel"
+no-loop
+when
+	pe1 : TohuDataItemObject(id == "PointsTotal" , answer < "10");
+	aDataItem : TohuDataItemObject (id == "CardType")
+then
+	aDataItem.setAnswer("Standard");
+	update(aDataItem);
+end
+
+rule "CardType150"
+dialect "mvel"
+no-loop
+when
+	pe1 : TohuDataItemObject(id == "PointsTotal" , answer >= "10");
+	aDataItem : TohuDataItemObject (id == "CardType")
+then
+	aDataItem.setAnswer("Gold");
+	update(aDataItem);
+end
+

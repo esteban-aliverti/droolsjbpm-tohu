@@ -1,0 +1,207 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author tohu-loader 
+ *
+ * (Notice included by creating a file called Copyright.drl in the import directory)
+ */
+package org.tohu.examples.biology.biology_app;
+
+import java.util.Calendar;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Answer;
+import org.tohu.Questionnaire;
+import org.tohu.support.TohuDataItemObject;
+
+import org.tohu.examples.biology.*;
+
+rule "DefaultPage"
+dialect "mvel"
+no-loop
+then
+	Group aGroup = new Group("DefaultPage");
+	aGroup.setItems({
+		"HaveHair",
+		"HaveHair_CHILDREN"});
+	insertLogical(aGroup);
+end
+
+rule "HaveHair"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "DefaultPage");
+then
+	MultipleChoiceQuestion aMultipleChoiceQuestion = new MultipleChoiceQuestion("HaveHair");
+	aMultipleChoiceQuestion.setAnswerType(Question.TYPE_TEXT);
+	aMultipleChoiceQuestion.setPreLabel("Do you have hair");
+	aMultipleChoiceQuestion.setPossibleAnswers({
+		new PossibleAnswer(null, "Please select . . ."),
+		new PossibleAnswer("Yes", "Yes"),
+		new PossibleAnswer("No", "No")});
+	insertLogical(aMultipleChoiceQuestion);
+end
+
+rule "HaveHair_CHILDREN"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "DefaultPage");
+then
+	Group aGroup = new Group("HaveHair_CHILDREN");
+	aGroup.setItems({
+		"LayEggs",
+		"LayEggs_CHILDREN",
+		"HaveFeathers"});
+	insertLogical(aGroup);
+end
+
+rule "LayEggs"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "HaveHair_CHILDREN");
+	pe1 : MultipleChoiceQuestion(id == "HaveHair" , answer == "Yes");
+then
+	MultipleChoiceQuestion aMultipleChoiceQuestion = new MultipleChoiceQuestion("LayEggs");
+	aMultipleChoiceQuestion.setAnswerType(Question.TYPE_TEXT);
+	aMultipleChoiceQuestion.setPreLabel("Do you lay eggs");
+	aMultipleChoiceQuestion.setPossibleAnswers({
+		new PossibleAnswer(null, "Please select . . ."),
+		new PossibleAnswer("Yes", "Yes"),
+		new PossibleAnswer("No", "No")});
+	insertLogical(aMultipleChoiceQuestion);
+end
+
+rule "monotreme"
+dialect "mvel"
+no-loop
+when
+	pe1 : MultipleChoiceQuestion(id == "LayEggs" , answer == "Yes");
+then
+	TohuDataItemObject aTohuDataItemObject = new TohuDataItemObject("monotreme");
+	aTohuDataItemObject.setAnswerType(Question.TYPE_TEXT);
+	aTohuDataItemObject.setAnswer("You are a monotreme");
+	aTohuDataItemObject.setCategory("Hairy");
+	aTohuDataItemObject.setReason("Hairy with eggs");
+	insertLogical(aTohuDataItemObject);
+end
+
+rule "LayEggs_CHILDREN"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "HaveHair_CHILDREN");
+then
+	Group aGroup = new Group("LayEggs_CHILDREN");
+	aGroup.setItems({"Pouch"});
+	insertLogical(aGroup);
+end
+
+rule "Pouch"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "LayEggs_CHILDREN");
+	pe1 : MultipleChoiceQuestion(id == "LayEggs" , answer == "No");
+then
+	MultipleChoiceQuestion aMultipleChoiceQuestion = new MultipleChoiceQuestion("Pouch");
+	aMultipleChoiceQuestion.setAnswerType(Question.TYPE_TEXT);
+	aMultipleChoiceQuestion.setPreLabel("Do you have a pouch");
+	aMultipleChoiceQuestion.setPossibleAnswers({
+		new PossibleAnswer(null, "Please select . . ."),
+		new PossibleAnswer("Yes", "Yes"),
+		new PossibleAnswer("No", "No")});
+	insertLogical(aMultipleChoiceQuestion);
+end
+
+rule "marsupial"
+dialect "mvel"
+no-loop
+when
+	pe1 : MultipleChoiceQuestion(id == "Pouch" , answer == "Yes");
+then
+	TohuDataItemObject aTohuDataItemObject = new TohuDataItemObject("marsupial");
+	aTohuDataItemObject.setAnswerType(Question.TYPE_TEXT);
+	aTohuDataItemObject.setAnswer("You are a marsupial");
+	aTohuDataItemObject.setCategory("Hairy");
+	aTohuDataItemObject.setReason("Hary with pouch");
+	insertLogical(aTohuDataItemObject);
+end
+
+rule "mammal"
+dialect "mvel"
+no-loop
+when
+	pe1 : MultipleChoiceQuestion(id == "Pouch" , answer == "No");
+then
+	TohuDataItemObject aTohuDataItemObject = new TohuDataItemObject("mammal");
+	aTohuDataItemObject.setAnswerType(Question.TYPE_TEXT);
+	aTohuDataItemObject.setAnswer("You are a mammal");
+	aTohuDataItemObject.setCategory("Hairy");
+	aTohuDataItemObject.setReason("Hary, no eggs, no pouch");
+	insertLogical(aTohuDataItemObject);
+end
+
+rule "HaveFeathers"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "HaveHair_CHILDREN");
+	pe1 : MultipleChoiceQuestion(id == "HaveHair" , answer == "No");
+then
+	MultipleChoiceQuestion aMultipleChoiceQuestion = new MultipleChoiceQuestion("HaveFeathers");
+	aMultipleChoiceQuestion.setAnswerType(Question.TYPE_TEXT);
+	aMultipleChoiceQuestion.setPreLabel("Do you have feathers");
+	aMultipleChoiceQuestion.setPossibleAnswers({
+		new PossibleAnswer(null, "Please select . . ."),
+		new PossibleAnswer("Yes", "Yes"),
+		new PossibleAnswer("No", "No")});
+	insertLogical(aMultipleChoiceQuestion);
+end
+
+rule "bird"
+dialect "mvel"
+no-loop
+when
+	pe1 : MultipleChoiceQuestion(id == "HaveFeathers" , answer == "Yes");
+then
+	TohuDataItemObject aTohuDataItemObject = new TohuDataItemObject("bird");
+	aTohuDataItemObject.setAnswerType(Question.TYPE_TEXT);
+	aTohuDataItemObject.setAnswer("You are a bird");
+	aTohuDataItemObject.setCategory("Non Hairy");
+	aTohuDataItemObject.setReason("Has feathers");
+	insertLogical(aTohuDataItemObject);
+end
+
+rule "reptile"
+dialect "mvel"
+no-loop
+when
+	pe1 : MultipleChoiceQuestion(id == "HaveFeathers" , answer == "No");
+then
+	TohuDataItemObject aTohuDataItemObject = new TohuDataItemObject("reptile");
+	aTohuDataItemObject.setAnswerType(Question.TYPE_TEXT);
+	aTohuDataItemObject.setAnswer("You are a reptile");
+	aTohuDataItemObject.setCategory("Non Hairy");
+	aTohuDataItemObject.setReason("No hair or feathers");
+	insertLogical(aTohuDataItemObject);
+end
+

@@ -1,0 +1,312 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author tohu-loader 
+ *
+ * (Notice included by creating a file called Copyright.drl in the import directory)
+ */
+package org.tohu.examples.loyalty.loyalty_complex_app;
+
+import java.util.Calendar;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Answer;
+import org.tohu.Questionnaire;
+import org.tohu.support.TohuDataItemObject;
+
+import org.tohu.examples.loyalty.*;
+
+rule "ContactDetailsPage"
+dialect "mvel"
+no-loop
+then
+	Group aGroup = new Group("ContactDetailsPage");
+	aGroup.setLabel("Please specify the details for the applicant.");
+	aGroup.setItems({
+		"PersonalDetails",
+		"MainAddress",
+		"PostalAddress"});
+	insertLogical(aGroup);
+end
+
+rule "PersonalDetails"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "ContactDetailsPage");
+then
+	Group aGroup = new Group("PersonalDetails");
+	aGroup.setLabel("1");
+	aGroup.setItems({
+		"applicationType",
+		"givenNames",
+		"surname",
+		"dob",
+		"email",
+		"phone"});
+	aGroup.setPresentationStyles({"section"});
+	insertLogical(aGroup);
+end
+
+rule "applicationType"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "PersonalDetails");
+then
+	MultipleChoiceQuestion aMultipleChoiceQuestion = new MultipleChoiceQuestion("applicationType");
+	aMultipleChoiceQuestion.setAnswerType(Question.TYPE_TEXT);
+	aMultipleChoiceQuestion.setAnswer("1");
+	aMultipleChoiceQuestion.setPreLabel("Application type");
+	aMultipleChoiceQuestion.setPossibleAnswers({
+		new PossibleAnswer("1", "Single"),
+		new PossibleAnswer("2", "Joint")});
+	insertLogical(aMultipleChoiceQuestion);
+end
+
+rule "givenNames"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "PersonalDetails");
+then
+	Question aQuestion = new Question("givenNames");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setRequired(true);
+	aQuestion.setPreLabel("Given or first names");
+	insertLogical(aQuestion);
+end
+
+rule "surname"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "PersonalDetails");
+then
+	Question aQuestion = new Question("surname");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setRequired(true);
+	aQuestion.setPreLabel("Family name");
+	insertLogical(aQuestion);
+end
+
+rule "dob"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "PersonalDetails");
+then
+	Question aQuestion = new Question("dob");
+	aQuestion.setAnswerType(Question.TYPE_DATE);
+	aQuestion.setPreLabel("Date of birth");
+	aQuestion.setPresentationStyles({"datepicker"});
+	insertLogical(aQuestion);
+end
+
+rule "email"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "PersonalDetails");
+then
+	Question aQuestion = new Question("email");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Email");
+	insertLogical(aQuestion);
+end
+
+rule "Validate emailValidation 15"
+when
+	pe1 : Question(id == "email" , answered == "true", answer : textAnswer);
+	eval(!answer.toUpperCase().matches("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[_A-Za-z-]+)")) ;
+then
+	insertLogical(new InvalidAnswer("email", "This is not a valid email address"));
+end
+
+rule "phone"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "PersonalDetails");
+then
+	Question aQuestion = new Question("phone");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Phone");
+	insertLogical(aQuestion);
+end
+
+rule "MainAddress"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "ContactDetailsPage");
+then
+	Group aGroup = new Group("MainAddress");
+	aGroup.setLabel("2");
+	aGroup.setItems({
+		"streetAddress",
+		"suburb",
+		"city",
+		"postcode"});
+	aGroup.setPresentationStyles({"section"});
+	insertLogical(aGroup);
+end
+
+rule "streetAddress"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainAddress");
+then
+	Question aQuestion = new Question("streetAddress");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Street Address");
+	insertLogical(aQuestion);
+end
+
+rule "suburb"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainAddress");
+then
+	Question aQuestion = new Question("suburb");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Suburb");
+	insertLogical(aQuestion);
+end
+
+rule "city"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainAddress");
+then
+	Question aQuestion = new Question("city");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("City");
+	insertLogical(aQuestion);
+end
+
+rule "postcode"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainAddress");
+then
+	Question aQuestion = new Question("postcode");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Post Code");
+	insertLogical(aQuestion);
+end
+
+rule "PostalAddress"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "ContactDetailsPage");
+then
+	Group aGroup = new Group("PostalAddress");
+	aGroup.setLabel("3");
+	aGroup.setItems({
+		"differentPostalAddress",
+		"additionalPostalFields"});
+	aGroup.setPresentationStyles({"section"});
+	insertLogical(aGroup);
+end
+
+rule "differentPostalAddress"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "PostalAddress");
+then
+	Question aQuestion = new Question("differentPostalAddress");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Alternative Postal Address");
+	aQuestion.setPostLabel("(select if different to above)");
+	aQuestion.setPresentationStyles({"first"});
+	insertLogical(aQuestion);
+end
+
+rule "additionalPostalFields"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "PostalAddress");
+	pe1 : Question(id == "differentPostalAddress" , answer == "true");
+then
+	Group aGroup = new Group("additionalPostalFields");
+	aGroup.setItems({
+		"postalStreetAddress",
+		"postalSuburb",
+		"postalCity",
+		"postalPostcode"});
+	insertLogical(aGroup);
+end
+
+rule "postalStreetAddress"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "additionalPostalFields");
+then
+	Question aQuestion = new Question("postalStreetAddress");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Postal Address");
+	insertLogical(aQuestion);
+end
+
+rule "postalSuburb"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "additionalPostalFields");
+then
+	Question aQuestion = new Question("postalSuburb");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Postal Suburb");
+	insertLogical(aQuestion);
+end
+
+rule "postalCity"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "additionalPostalFields");
+then
+	Question aQuestion = new Question("postalCity");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Postal City");
+	insertLogical(aQuestion);
+end
+
+rule "postalPostcode"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "additionalPostalFields");
+then
+	Question aQuestion = new Question("postalPostcode");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Post Code");
+	insertLogical(aQuestion);
+end
+

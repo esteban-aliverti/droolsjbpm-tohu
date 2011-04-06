@@ -1,0 +1,119 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author tohu-loader 
+ *
+ * (Notice included by creating a file called Copyright.drl in the import directory)
+ */
+package org.tohu.examples.loyalty.loyalty_complex_app;
+
+import java.util.Calendar;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Answer;
+import org.tohu.Questionnaire;
+import org.tohu.support.TohuDataItemObject;
+
+import org.tohu.examples.loyalty.*;
+
+rule "MainOtherLoyaltyDetailsPage"
+dialect "mvel"
+no-loop
+then
+	Group aGroup = new Group("MainOtherLoyaltyDetailsPage");
+	aGroup.setLabel("Please specify the other loyalty programs for the applicant.");
+	aGroup.setItems({
+		"MainNameSummaryItems",
+		"LoyaltyProgramItems"});
+	insertLogical(aGroup);
+end
+
+rule "MainNameSummaryItems"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainOtherLoyaltyDetailsPage");
+then
+	Group aGroup = new Group("MainNameSummaryItems");
+	aGroup.setLabel("7");
+	aGroup.setItems({
+		"givenNames",
+		"surname"});
+	aGroup.setPresentationStyles({
+		"readonly",
+		"row"});
+	insertLogical(aGroup);
+end
+
+rule "LoyaltyProgramItems"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainOtherLoyaltyDetailsPage");
+then
+	Group aGroup = new Group("LoyaltyProgramItems");
+	aGroup.setItems({
+		"budgetAirways",
+		"onlineFood",
+		"mochaCoffee"});
+	insertLogical(aGroup);
+end
+
+rule "budgetAirways"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "LoyaltyProgramItems");
+then
+	Question aQuestion = new Question("budgetAirways");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Budget Airways?");
+	aQuestion.setPresentationStyles({"yesNoButtons"});
+	insertLogical(aQuestion);
+end
+
+rule "onlineFood"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "LoyaltyProgramItems");
+then
+	Question aQuestion = new Question("onlineFood");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Online Food?");
+	aQuestion.setPresentationStyles({"yesNoButtons"});
+	insertLogical(aQuestion);
+end
+
+rule "mochaCoffee"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "LoyaltyProgramItems");
+then
+	Question aQuestion = new Question("mochaCoffee");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Mocha Coffee?");
+	aQuestion.setPresentationStyles({"yesNoButtons"});
+	insertLogical(aQuestion);
+end
+

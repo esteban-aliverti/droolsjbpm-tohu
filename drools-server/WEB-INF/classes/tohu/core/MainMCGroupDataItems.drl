@@ -1,0 +1,129 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author tohu-loader 
+ *
+ * (Notice included by creating a file called Copyright.drl in the import directory)
+ */
+package org.tohu.examples.loyalty.loyalty_complex_app;
+
+import java.util.Calendar;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Answer;
+import org.tohu.Questionnaire;
+import org.tohu.support.TohuDataItemObject;
+
+import org.tohu.examples.loyalty.*;
+
+rule "Branch MainMCGroupDataItems"
+salience 75
+no-loop
+when
+	pe1 : Question(id == "mochaCoffee"  );
+	Answer (questionId == pe1.id , value == "true");
+	q : Questionnaire(items not contains "MainMCGroupDataItems");
+then
+	if (q.isBranched() == false) {
+		q.navigationBranch(new String[]{"MainMCGroupDataItems"}, "MainMCGroupDataItems");
+	}
+	else {
+		q.appendItem("MainMCGroupDataItems", q.getActiveItem());
+	}
+	update(q);
+end
+
+rule "MainMCGroupDataItems"
+dialect "mvel"
+no-loop
+when
+	pe1 : Question(id == "mochaCoffee" , answer == "true");
+then
+	Group aGroup = new Group("MainMCGroupDataItems");
+	aGroup.setLabel("Please specify the loyalty program details.");
+	aGroup.setItems({"MainMCGroup"});
+	insertLogical(aGroup);
+end
+
+rule "MainMCGroup"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainMCGroupDataItems");
+then
+	Group aGroup = new Group("MainMCGroup");
+	aGroup.setLabel("8");
+	aGroup.setItems({
+		"mmcMembershipNumber",
+		"mmcMembershipName",
+		"mmcSpecialOffers"});
+	insertLogical(aGroup);
+end
+
+rule "mainMCPoints"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainMCGroup");
+	pe1 : Question(id == "mochaCoffee" , answer == "true");
+then
+	TohuDataItemObject aTohuDataItemObject = new TohuDataItemObject("mainMCPoints");
+	aTohuDataItemObject.setAnswerType(Question.TYPE_NUMBER);
+	aTohuDataItemObject.setAnswer(-10L);
+	aTohuDataItemObject.setCategory("Points");
+	aTohuDataItemObject.setName("Main Person has a MC Card");
+	insertLogical(aTohuDataItemObject);
+end
+
+rule "mmcMembershipNumber"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainMCGroup");
+then
+	Question aQuestion = new Question("mmcMembershipNumber");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Membership number");
+	insertLogical(aQuestion);
+end
+
+rule "mmcMembershipName"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainMCGroup");
+then
+	Question aQuestion = new Question("mmcMembershipName");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Membership name");
+	insertLogical(aQuestion);
+end
+
+rule "mmcSpecialOffers"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainMCGroup");
+then
+	Question aQuestion = new Question("mmcSpecialOffers");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setPreLabel("Do you want to receive combined special offers?");
+	insertLogical(aQuestion);
+end
+

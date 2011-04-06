@@ -1,0 +1,132 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author tohu-loader 
+ *
+ * (Notice included by creating a file called Copyright.drl in the import directory)
+ */
+package org.tohu.examples.loyalty.loyalty_complex_app;
+
+import java.util.Calendar;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Answer;
+import org.tohu.Questionnaire;
+import org.tohu.support.TohuDataItemObject;
+
+import org.tohu.examples.loyalty.*;
+
+rule "Branch JointBAGroupDataItems"
+salience 75
+no-loop
+when
+	pe1 : Question(id == "budgetAirwaysJoint"  );
+	Answer (questionId == pe1.id , value == "true");
+	q : Questionnaire(items not contains "JointBAGroupDataItems");
+then
+	if (q.isBranched() == false) {
+		q.navigationBranch(new String[]{"JointBAGroupDataItems"}, "JointBAGroupDataItems");
+	}
+	else {
+		q.appendItem("JointBAGroupDataItems", q.getActiveItem());
+	}
+	update(q);
+end
+
+rule "JointBAGroupDataItems"
+dialect "mvel"
+no-loop
+when
+	pe1 : Question(id == "budgetAirwaysJoint" , answer == "true");
+then
+	Group aGroup = new Group("JointBAGroupDataItems");
+	aGroup.setLabel("Please specify the loyalty program details.");
+	aGroup.setItems({"JointBAGroup"});
+	insertLogical(aGroup);
+end
+
+rule "JointBAGroup"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointBAGroupDataItems");
+then
+	Group aGroup = new Group("JointBAGroup");
+	aGroup.setLabel("8");
+	aGroup.setItems({
+		"jbaMembershipNumber",
+		"jbaMembershipName",
+		"jbaMembershipType",
+		"jbaSpecialOffers"});
+	insertLogical(aGroup);
+end
+
+rule "jbaMembershipNumber"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointBAGroup");
+then
+	Question aQuestion = new Question("jbaMembershipNumber");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Membership number");
+	insertLogical(aQuestion);
+end
+
+rule "jbaMembershipName"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointBAGroup");
+then
+	Question aQuestion = new Question("jbaMembershipName");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Membership name");
+	insertLogical(aQuestion);
+end
+
+rule "jbaMembershipType"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointBAGroup");
+then
+	MultipleChoiceQuestion aMultipleChoiceQuestion = new MultipleChoiceQuestion("jbaMembershipType");
+	aMultipleChoiceQuestion.setAnswerType(Question.TYPE_TEXT);
+	aMultipleChoiceQuestion.setPreLabel("Membership Type");
+	aMultipleChoiceQuestion.setPossibleAnswers({
+		new PossibleAnswer("1", "Gold"),
+		new PossibleAnswer("2", "Silver"),
+		new PossibleAnswer("3", "Bronze")});
+	aMultipleChoiceQuestion.setPresentationStyles({"radio"});
+	insertLogical(aMultipleChoiceQuestion);
+end
+
+rule "jbaSpecialOffers"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointBAGroup");
+then
+	Question aQuestion = new Question("jbaSpecialOffers");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setPreLabel("Do you want to receive combined special offers?");
+	insertLogical(aQuestion);
+end
+
