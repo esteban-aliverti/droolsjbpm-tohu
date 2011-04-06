@@ -1,0 +1,30 @@
+<execution-results>
+	<result identifier="changes">
+		<org.tohu.xml.ChangeCollector>
+			<delete>
+                <org.tohu.InvalidAnswer>
+                  <questionId>item_6_1</questionId>
+                  <reason>Item 6.1 Error</reason>
+                </org.tohu.InvalidAnswer>
+			</delete>
+			<create>
+			</create>
+			<update>
+				<org.tohu.Questionnaire>
+					<id>questionnaire2</id>
+					<clientDateFormat>dd/mm/yyyy</clientDateFormat>
+					<presentationStyles>questionnaire2Style</presentationStyles>
+					<active>true</active>
+					<label>Questionnaire 2</label>
+					<items>group4,group5,group6</items>
+          <availableItems>group4,group5,group6</availableItems>
+					<activeItem>group6</activeItem>
+					<completionAction>#return</completionAction>
+					<invalidAnswers>false</invalidAnswers>
+					<enableActionValidation>false</enableActionValidation>						
+				</org.tohu.Questionnaire>
+			</update>
+		</org.tohu.xml.ChangeCollector>
+	</result>
+	<fact-handle identifier="changes" externalForm="changesHandle" />
+</execution-results> 

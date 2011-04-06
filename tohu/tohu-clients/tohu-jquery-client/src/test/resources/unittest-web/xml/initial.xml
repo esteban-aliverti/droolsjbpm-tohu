@@ -1,0 +1,264 @@
+<execution-results>
+	<result identifier="activeObjects">
+		<query-results>
+			<identifiers>
+				<identifier>object</identifier>
+			</identifiers>
+			<row>
+				<org.tohu.Question>
+					<id>item_2_1</id>
+					<presentationStyles>item_2_1Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 2.1</preLabel>
+					<postLabel>Simple Text Field</postLabel>
+					<required>true</required>
+					<answerType>text</answerType>
+					<textAnswer>Item 2.1 Text</textAnswer>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_2_1Handle" />
+			</row>
+			<row>
+				<org.tohu.Note>
+					<id>item_1_1</id>
+					<presentationStyles>item_1_1Style1,image,item_1_1Style2</presentationStyles>
+					<active>true</active>
+					<label>images/earth.jpg</label>
+				</org.tohu.Note>
+				<fact-handle externalForm="item_1_1Handle" />
+			</row>
+			<row>
+				<org.tohu.Group>
+					<id>group3</id>
+					<presentationStyles>group3Style</presentationStyles>
+					<active>true</active>
+					<label>Group 3</label>
+					<items>item_3_1,item_3_2,item_3_3</items>
+				</org.tohu.Group>
+				<fact-handle externalForm="group3Handle" />
+			</row>
+			<row>
+				<org.tohu.InvalidAnswer>
+					<questionId>item_4_3</questionId>
+					<reason>Item 4.3 Error 2</reason>
+					<type>ErrorType2</type>
+				</org.tohu.InvalidAnswer>
+				<fact-handle externalForm="item4_3Error2" />
+			</row>
+			<row>
+				<org.tohu.Group>
+					<id>group4</id>
+					<presentationStyles>group4Style</presentationStyles>
+					<active>true</active>
+					<label>Group 4</label>
+					<items>item_4_1,item_4_2,item_4_3,item_4_4,item_4_5,item_4_6</items>
+				</org.tohu.Group>
+				<fact-handle externalForm="group4Handle" />
+			</row>
+			<row>
+				<org.tohu.Questionnaire>
+					<id>questionnaire1</id>
+					<clientDateFormat>dd/mm/yyyy</clientDateFormat>
+					<presentationStyles>questionnaire1Style</presentationStyles>
+					<active>true</active>
+					<label>Questionnaire 1</label>
+					<items>group1,group2,group3,group6</items>
+          <availableItems>group1,group2,group3,group6</availableItems>
+					<activeItem>group1</activeItem>
+					<completionAction>#return</completionAction>
+					<enableActionValidation>false</enableActionValidation>
+					<invalidAnswers>true</invalidAnswers>
+				</org.tohu.Questionnaire>
+				<fact-handle externalForm="questionnaire1Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_4_1</id>
+					<presentationStyles>item_4_1Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 4.1</preLabel>
+					<postLabel>Boolean Checkbox</postLabel>
+					<required>true</required>
+					<answerType>boolean</answerType>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_4_1Handle" />
+			</row>
+			<row>
+				<org.tohu.Group>
+					<id>group1</id>
+					<presentationStyles>group1Style</presentationStyles>
+					<active>true</active>
+					<label>Group 1</label>
+					<items>item_1_1,item_1_2,group4,item_1_3</items>
+				</org.tohu.Group>
+				<fact-handle externalForm="group1Handle" />
+			</row>
+			<row>
+				<org.tohu.Group>
+					<id>group2</id>
+					<presentationStyles>group2Style</presentationStyles>
+					<active>true</active>
+					<label>Group 2</label>
+					<items>item_2_1,item_2_2,item_2_3</items>
+				</org.tohu.Group>
+				<fact-handle externalForm="group2Handle" />
+			</row>
+			<row>
+				<org.tohu.Note>
+					<id>item_1_2</id>
+					<presentationStyles>item_1_2Style</presentationStyles>
+					<active>true</active>
+					<label>Item 1.2</label>
+				</org.tohu.Note>
+				<fact-handle externalForm="item_1_2Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_1_3</id>
+					<presentationStyles>datepicker,item_1_3Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 1.3</preLabel>
+					<postLabel>Date Field with Picker</postLabel>
+					<required>true</required>
+					<answerType>date</answerType>
+					<dateAnswer>2009-06-16</dateAnswer>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_1_3Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_2_2</id>
+					<presentationStyles>item_2_2Style,textarea</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 2.2</preLabel>
+					<postLabel>Text Area</postLabel>
+					<required>false</required>
+					<answerType>text</answerType>
+					<textAnswer>Item 2.2 Text</textAnswer>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_2_2Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_2_3</id>
+					<presentationStyles>item_2_3Style,radio</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 2.3</preLabel>
+					<postLabel>Radio Buttons</postLabel>
+					<required>true</required>
+					<answerType>number</answerType>
+					<numberAnswer>1</numberAnswer>
+					<possibleAnswers>null=Please specify...,0=Item 2.3.0,1=Item 2.3.1,2=Item 2.3.2</possibleAnswers>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_2_3Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_3_1</id>
+					<presentationStyles>item_3_1Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 3.1</preLabel>
+					<postLabel>Decimal Dropdown List</postLabel>
+					<required>false</required>
+					<answerType>decimal</answerType>
+					<decimalAnswer>0.3</decimalAnswer>
+					<possibleAnswers>0.1=Item 3.1.0.1,0.2=Item 3.1.0.2,0.3=Item 3.1.0.3</possibleAnswers>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_3_1Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_3_2</id>
+					<presentationStyles>item_3_2Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 3.2</preLabel>
+					<postLabel>Text Dropdown List</postLabel>
+					<required>false</required>
+					<answerType>text</answerType>
+					<possibleAnswers>null=Please specify...,first=Item 3.2.1,second=Item 3.2.2,third=Item 3.2.3</possibleAnswers>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_3_2Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_3_3</id>
+					<presentationStyles>item_3_3Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 3.3</preLabel>
+					<postLabel>Date Field without Picker</postLabel>
+					<required>true</required>
+					<answerType>date</answerType>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_3_3Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_4_3</id>
+					<presentationStyles>radio,item_4_3Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 4.3</preLabel>
+					<postLabel>Boolean Radio Buttons</postLabel>
+					<required>true</required>
+					<answerType>boolean</answerType>
+					<booleanAnswer>true</booleanAnswer>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_4_3Handle" />
+			</row>
+			<row>
+				<org.tohu.InvalidAnswer>
+					<questionId>item_2_3</questionId>
+					<reason>Item 2.3 Error</reason>
+					<type>ErrorType1</type>
+				</org.tohu.InvalidAnswer>
+				<fact-handle externalForm="item2_3Error" />
+			</row>
+			<row>
+				<org.tohu.InvalidAnswer>
+					<questionId>item_4_3</questionId>
+					<reason>Item 4.3 Error 1</reason>
+					<type>ErrorType1</type>
+				</org.tohu.InvalidAnswer>
+				<fact-handle externalForm="item4_3Error1" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_4_4</id>
+					<presentationStyles>multitable,or,item_4_4Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 4.4</preLabel>
+					<postLabel>Multiple answer select</postLabel>
+					<required>false</required>
+					<answerType>list</answerType>
+					<listAnswer>foo||qux</listAnswer>
+					<possibleAnswers>foo=foo,bar=bar,baz=baz,qux=qux,quux=quux</possibleAnswers>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_4_4Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_4_5</id>
+					<presentationStyles>item_4_5Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 4.5</preLabel>
+					<postLabel>Text Field with special characters</postLabel>
+					<required>false</required>
+					<answerType>text</answerType>
+					<textAnswer>Text &lt;&gt;&amp;&#39;&quot;!@#$%^*()_-+={}[]:;?/,.`\&lt;&gt;&amp;&#39;&quot;!@#$%^*()_-+={}[]:;?/,.`\</textAnswer>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_4_5Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_4_6</id>
+					<presentationStyles>item_4_6Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 4.6</preLabel>
+					<postLabel>Text Dropdown List with no null entry</postLabel>
+					<required>false</required>
+					<answerType>text</answerType>
+					<possibleAnswers>first=Item 4.6.1,second=Item 4.6.2,third=Item 4.6.3</possibleAnswers>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_4_6Handle" />
+			</row>
+		</query-results>
+	</result>
+</execution-results>

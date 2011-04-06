@@ -1,0 +1,291 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Damon Horrell
+ */
+package org.tohu.examples.departure
+
+import java.util.Calendar;
+
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+
+rule "sections"
+dialect "mvel"
+then
+	Questionnaire questionnaire = new Questionnaire("myQuestionnaire");
+	questionnaire.setLabel("EARTH PASSENGER DEPARTURE CARD");
+	questionnaire.setItems({"group1", "group2", "group3", "group4"});
+	questionnaire.setCompletionAction("extract.pdf");
+	//questionnaire.setActiveItem("group1");
+	insertLogical(questionnaire);
+	
+	Group group = new Group("group1");
+	group.setLabel("1");
+	group.setItems({"flight", "passport", "nationality", "surname", "givenNames", "dob", "occupation", "address", "birthPlanet", "destination"});
+	group.setPresentationStyles({"section"});
+	insertLogical(group);		
+
+	group = new Group("group2");
+	group.setLabel("2");
+	group.setItems({"stayingOnEarthRow", "picture"});
+	group.setPresentationStyles({"section"});
+	insertLogical(group);		
+
+	group = new Group("group3");
+	group.setLabel("3");
+	group.setItems({
+		"liveOnEarth",
+		"residentDuration", "awayPermanentlyRow", "tripPurpose", "tripPlanet",
+		"visitDurationRow"
+	});
+	group.setPresentationStyles({"section"});
+	insertLogical(group);		
+
+	group = new Group("group4");
+	group.setLabel("4");
+	group.setItems({"departureDate"});
+	group.setPresentationStyles({"section"});
+	insertLogical(group);		
+
+end
+
+rule "static"
+dialect "mvel" 
+then		
+	Question question = new Question("flight");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Flight number / Name of spaceship");
+	insertLogical(question);
+
+	question = new Question("passport");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Passport number");
+	insertLogical(question);
+
+	question = new Question("nationality");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Nationality as shown on passport");
+	insertLogical(question);
+
+	question = new Question("surname");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Family name");
+	insertLogical(question);
+
+	question = new Question("givenNames");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Given or first names");
+	insertLogical(question);
+
+	question = new Question("dob");
+	question.setPresentationStyles({"datepicker"});
+	question.setAnswerType(Question.TYPE_DATE);
+	question.setPreLabel("Date of birth");
+	insertLogical(question);
+
+	question = new Question("occupation");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Occupation or job");
+	insertLogical(question);
+
+	question = new Question("address");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Full contact or residential address on Earth");
+	insertLogical(question);
+
+	question = new Question("birthPlanet");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Planet of birth");
+	insertLogical(question);
+
+	question = new Question("destination");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Overseas port where you will leave THIS spacecraft");
+	insertLogical(question);
+
+	Group group = new Group("stayingOnEarthRow");
+	group.setItems({"stayingOnEarth", "planetNext"});
+	group.setPresentationStyles({"row"});
+	insertLogical(group);
+
+	question = new Question("stayingOnEarth");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Which planet will you next live on for 12 months or more?");
+	question.setPostLabel("Earth");
+	question.setPresentationStyles({"first"});
+	question.setAnswer(false);
+	insertLogical(question);
+
+	question = new Question("liveOnEarth");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Do you live on Earth, or did you until today?");
+	question.setPresentationStyles({"radio"});
+	insertLogical(question);
+	
+	question = new Question("departureDate");
+	question.setPresentationStyles({"datepicker"});
+	question.setAnswerType(Question.TYPE_DATE);
+	question.setPreLabel("Date of departure");
+	question.setAnswer(Calendar.getInstance().getTime());
+	insertLogical(question);
+end
+
+rule "next planet"
+dialect "mvel" 
+when
+	Question(id == "stayingOnEarth", answer != "true");
+then
+	Question question = new Question("planetNext");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("or");
+	insertLogical(question);
+	
+	Note note = new Note("picture");
+	note.setPresentationStyles({"image"});
+	note.setLabel("images/mars.jpg");
+	insertLogical(note);
+end
+
+rule "this planet"
+dialect "mvel" 
+when
+	Question(id == "stayingOnEarth", answer == "true");
+then
+	Note note = new Note("picture");
+	note.setPresentationStyles({"image"});
+	note.setLabel("images/earth.jpg");
+	insertLogical(note);
+end
+
+rule "resident"
+dialect "mvel"
+when
+	Question(id == "liveOnEarth", answer == true);
+then
+	MultipleChoiceQuestion multi = new MultipleChoiceQuestion("residentDuration");
+	multi.setAnswerType(Question.TYPE_TEXT);
+	multi.setPreLabel("I have lived on Earth for:");
+	multi.setPossibleAnswers({
+		new PossibleAnswer("L", "less than 12 months"),
+		new PossibleAnswer("M", "12 months +")
+	});
+	multi.setPresentationStyles({"radio"});
+	insertLogical(multi);
+
+	Group group = new Group("awayPermanentlyRow");
+	group.setItems({"awayPermanently", "tripDuration", "tripDurationUnits"});
+	group.setPresentationStyles({"row"});
+	insertLogical(group);
+
+	Question question = new Question("awayPermanently");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("How long will you be away from Earth?");
+	question.setPostLabel("permanently");
+	question.setPresentationStyles({"first"});
+	question.setAnswer(false);
+	insertLogical(question);
+end
+
+rule "leaving temporarily"
+dialect "mvel" 
+when
+	Question(id == "awayPermanently", answer != "true");
+then
+	Question question = new Question("tripDuration");
+	question.setAnswerType(Question.TYPE_NUMBER);
+	question.setPreLabel("or");
+	question.setPresentationStyles({"short"});
+	insertLogical(question);
+
+	MultipleChoiceQuestion multi = new MultipleChoiceQuestion("tripDurationUnits");
+	multi.setAnswerType(Question.TYPE_TEXT);
+	multi.setPossibleAnswers({
+		new PossibleAnswer("D", "Days"),
+		new PossibleAnswer("M", "Months"),
+		new PossibleAnswer("Y", "Years")
+	});
+	multi.setAnswer("D");
+	insertLogical(multi);
+	
+	multi = new MultipleChoiceQuestion("tripPurpose");
+	multi.setAnswerType(Question.TYPE_TEXT);
+	multi.setPreLabel("What is the MAIN purpose of your trip?");
+	multi.setPossibleAnswers({
+		new PossibleAnswer(null, "Please specify..."),
+		new PossibleAnswer("F", "Visiting friends or relatives"),
+		new PossibleAnswer("B", "Business"),
+		new PossibleAnswer("H", "Holiday, or Vacation"),
+		new PossibleAnswer("C", "Conference, or Convention"),
+		new PossibleAnswer("E", "Education"),
+		new PossibleAnswer("O", "Other")
+	});
+	insertLogical(multi);
+
+	question = new Question("tripPlanet");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Which planet will you spend most time on while away?");
+	insertLogical(question);
+end
+
+rule "visitor"
+dialect "mvel" 
+when
+	Question(id == "liveOnEarth", answer == false);
+then
+	Group group = new Group("visitDurationRow");
+	group.setItems({"visitDuration", "visitDurationUnits"});
+	group.setPresentationStyles({"row"});
+	insertLogical(group);
+
+	Question question = new Question("visitDuration");
+	question.setAnswerType(Question.TYPE_NUMBER);
+	question.setPreLabel("On this visit I have been on Earth for a period of:");
+	question.setPresentationStyles({"first", "short"});
+	insertLogical(question);
+
+	MultipleChoiceQuestion multi = new MultipleChoiceQuestion("visitDurationUnits");
+	multi.setAnswerType(Question.TYPE_TEXT);
+	multi.setPossibleAnswers({
+		new PossibleAnswer("D", "Days"),
+		new PossibleAnswer("M", "Months"),
+		new PossibleAnswer("Y", "Years")
+	});
+	multi.setAnswer("D");
+	insertLogical(multi);
+end
+
+rule "validatePassport"
+dialect "java"
+when
+	Question(id == "passport", answered == true, answer : textAnswer);
+	eval(!answer.toUpperCase().matches("[A-Z]+\\d+"));
+then
+	insertLogical(new InvalidAnswer("passport", "This is not a valid passport number"));
+end
+
+// all questions are mandatory 
+rule "required"
+when
+	question : Question(required == false);
+then
+	question.setRequired(true);
+	update(question);
+end

@@ -1,0 +1,133 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author tohu-loader 
+ *
+ * (Notice included by creating a file called Copyright.drl in the import directory)
+ */
+package org.tohu.examples.loyalty.loyalty_complex_app;
+
+import java.util.Calendar;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Answer;
+import org.tohu.Questionnaire;
+import org.tohu.support.TohuDataItemObject;
+
+import org.tohu.examples.loyalty.*;
+
+rule "JointContactDetailsPage"
+dialect "mvel"
+no-loop
+when
+	pe1 : MultipleChoiceQuestion(id == "applicationType" , answer == "2");
+then
+	Group aGroup = new Group("JointContactDetailsPage");
+	aGroup.setLabel("Please specify the details for the joint applicant.");
+	aGroup.setItems({"JointPersonalDetails"});
+	insertLogical(aGroup);
+end
+
+rule "JointPersonalDetails"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointContactDetailsPage");
+then
+	Group aGroup = new Group("JointPersonalDetails");
+	aGroup.setLabel("1+");
+	aGroup.setItems({
+		"givenNamesJoint",
+		"surnameJoint",
+		"dobJoint",
+		"emailJoint",
+		"phoneJoint"});
+	aGroup.setPresentationStyles({"section"});
+	insertLogical(aGroup);
+end
+
+rule "givenNamesJoint"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointPersonalDetails");
+then
+	Question aQuestion = new Question("givenNamesJoint");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Given or first names");
+	insertLogical(aQuestion);
+end
+
+rule "surnameJoint"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointPersonalDetails");
+then
+	Question aQuestion = new Question("surnameJoint");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Family name");
+	insertLogical(aQuestion);
+end
+
+rule "dobJoint"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointPersonalDetails");
+then
+	Question aQuestion = new Question("dobJoint");
+	aQuestion.setAnswerType(Question.TYPE_DATE);
+	aQuestion.setPreLabel("Date of birth");
+	aQuestion.setPresentationStyles({"datepicker"});
+	insertLogical(aQuestion);
+end
+
+rule "emailJoint"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointPersonalDetails");
+then
+	Question aQuestion = new Question("emailJoint");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Email");
+	insertLogical(aQuestion);
+end
+
+rule "Validate emailJointValidation 41"
+when
+	pe1 : Question(id == "emailJoint" , answered == "true", answer : textAnswer);
+	eval(!answer.toUpperCase().matches("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[_A-Za-z-]+)")) ;
+then
+	insertLogical(new InvalidAnswer("emailJoint", "This is not a valid email address"));
+end
+
+rule "phoneJoint"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointPersonalDetails");
+then
+	Question aQuestion = new Question("phoneJoint");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Phone");
+	insertLogical(aQuestion);
+end
+

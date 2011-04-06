@@ -1,0 +1,81 @@
+<execution-results>
+	<result identifier="changes">
+		<org.tohu.xml.ChangeCollector>
+			<delete>
+				<org.tohu.xml.ItemId>
+					<id>item_2_1</id>
+				</org.tohu.xml.ItemId>
+			</delete>
+			<create>
+				<entry>
+					<org.tohu.Question>
+						<id>item_5_2</id>
+						<presentationStyles>item_5_2Style1,radio,item_5_2Style2</presentationStyles>
+						<active>true</active>
+						<preLabel>Item 5.2</preLabel>
+						<postLabel>More Radio Buttons</postLabel>
+						<required>false</required>
+						<answerType>number</answerType>
+						<possibleAnswers>null=Please specify...,0=Item 5.2.0,1=Item 5.2.1,2=Item 5.2.2</possibleAnswers>
+					</org.tohu.Question>
+					<fact-handle externalForm="item_5_2Handle"/> 
+				</entry>
+				<entry>
+					<org.tohu.Question>
+						<id>item_5_1</id>
+						<presentationStyles>item_5_1Style</presentationStyles>
+						<active>true</active>
+						<preLabel>Item 5.1</preLabel>
+						<postLabel>Simple Text Field</postLabel>
+						<required>true</required>
+						<answerType>text</answerType>
+					</org.tohu.Question>
+					<fact-handle externalForm="item_5_1Handle"/> 
+				</entry>
+				<entry>
+					<org.tohu.Group>
+						<id>group5</id>
+						<presentationStyles>group5Style1,group5Style2</presentationStyles>
+						<active>true</active>
+						<label>Group 5</label>
+						<items>item_5_1,item_5_2,item_5_3</items>
+					</org.tohu.Group>
+					<fact-handle externalForm="group5Handle"/> 
+				</entry>
+			</create>
+			<update>
+				<org.tohu.Questionnaire>
+					<id>questionnaire1</id>
+					<clientDateFormat>dd/mm/yyyy</clientDateFormat>
+					<presentationStyles>questionnaire1Style1,questionnaire1Style2</presentationStyles>
+					<active>true</active>
+					<label>Questionnaire 1a</label>
+					<items>group1,group2,group3,group6</items>
+          <availableItems>group1,group2,group3,group6</availableItems>
+					<activeItem>group3</activeItem>
+					<completionAction>#return</completionAction>
+					<invalidAnswers>true</invalidAnswers>
+					<enableActionValidation>false</enableActionValidation>						
+				</org.tohu.Questionnaire>
+				<org.tohu.Question>
+					<id>item_2_3</id>
+					<presentationStyles>item_2_3Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 2.3</preLabel>
+					<postLabel>Radio Buttons?</postLabel>
+					<required>true</required>
+					<answerType>number</answerType>
+					<possibleAnswers>null=Please specify...,0=Item 2.3.0,1=Item 2.3.1,2=Item 2.3.2</possibleAnswers>
+				</org.tohu.Question>
+				<org.tohu.Group>
+					<id>group2</id>
+					<presentationStyles>group2Style1,group2Style3,group2Style2</presentationStyles>
+					<active>true</active>
+					<label>Group 2a</label>
+					<items>group5,item_2_1,item_2_2,item_2_3</items>
+				</org.tohu.Group>
+			</update>
+		</org.tohu.xml.ChangeCollector>
+	</result>
+	<fact-handle identifier="changes" externalForm="changesHandle" />
+</execution-results> 

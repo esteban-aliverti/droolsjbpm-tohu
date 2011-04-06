@@ -1,0 +1,212 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Derek Rendall
+ */
+package org.tohu.examples.loyalty.page1
+
+import java.util.Calendar;
+
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+
+
+rule "ContactDetailsPage"
+dialect "mvel"
+then
+	Group page = new Group("ContactDetailsPage");
+	page.setLabel("Sign up for the best rewards online!");		
+
+	Group personalDetails = new Group("PersonalDetails");
+	personalDetails.setLabel("1");
+	page.addItem(personalDetails.getId());
+	personalDetails.setPresentationStyles({"section"});
+	insertLogical(personalDetails);		
+	
+	Group mainAddress = new Group("MainAddress");
+	mainAddress.setLabel("2");
+	page.addItem(mainAddress.getId());
+	mainAddress.setPresentationStyles({"section"});
+	insertLogical(mainAddress);		
+	
+	Group postalAddress = new Group("PostalAddress");
+	postalAddress.setLabel("3");
+	page.addItem(postalAddress.getId());
+	postalAddress.setPresentationStyles({"section"});
+	insertLogical(postalAddress);		
+
+	insertLogical(page);
+end
+
+
+rule "personalDetailsSection"
+dialect "mvel" 
+when
+	g : Group(id == "PersonalDetails", items == null)
+	// Do not use an insertLogical as the items == null will change, causing the 
+	// questions to dissappear
+then		
+	MultipleChoiceQuestion mcQuestion = new MultipleChoiceQuestion("applicationType");
+	g.addItem(mcQuestion.getId());
+	mcQuestion.setAnswerType(Question.TYPE_TEXT);
+	mcQuestion.setPreLabel("Application Type");
+	mcQuestion.setPossibleAnswers({
+		new PossibleAnswer("1", "Single"),
+		new PossibleAnswer("2", "Joint")}
+	);
+	mcQuestion.setAnswer("1");
+	insert(mcQuestion);
+
+	Question question = new Question("givenNames");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Given or first names");
+	insert(question);
+
+	question = new Question("surname");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Family name");
+	insert(question);
+
+	question = new Question("dob");
+	g.addItem(question.getId());
+	question.setPresentationStyles({"datepicker"});
+	question.setAnswerType(Question.TYPE_DATE);
+	question.setPreLabel("Date of birth");
+	insert(question);
+
+	question = new Question("email");
+	g.addItem(question.getId());
+	question.setAnswerType("text.email");
+	question.setPreLabel("Email");
+	insert(question);
+
+	question = new Question("phone");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Phone");
+	insert(question);
+	
+	update(g);
+end
+	
+rule "mainAddressSection"
+dialect "mvel" 
+when
+	g : Group(id == "MainAddress", items == null)
+	// Do not use an insertLogical as the items == null will change, causing the 
+	// questions to dissappear
+then		
+
+	Question question = new Question("streetAddress");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Street Address");
+	insert(question);
+
+	question = new Question("suburb");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Suburb");
+	insert(question);
+
+	question = new Question("city");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("City");
+	insert(question);
+
+	question = new Question("postcode");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Post Code");
+	insert(question);
+	
+	update(g);
+end
+
+
+rule "postalAddressSection"
+dialect "mvel" 
+when
+	g : Group(id == "PostalAddress", items == null)
+	// Do not use an insertLogical as the items == null will change, causing the 
+	// questions to dissappear
+then		
+
+	Question question = new Question("differentPostalAddress");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Alternative Postal Address?");
+	question.setPostLabel("(select if different to above)");
+	question.setPresentationStyles({"first"});
+	question.setAnswer(false);
+	insert(question);
+	
+	// Compromise where we set up the relationship to child ahead of time
+	// Avoids having to search for the group when the list of questions
+	// is also managed by truth maintenance.
+	g.addItem("additionalPostalFields");
+	
+	
+	update(g);
+end
+
+rule "postalAddress"
+dialect "mvel" 
+when
+	Question(id == "differentPostalAddress", answer == "true")
+then
+
+	// we could troll working memory to get a real group to attach to
+	// but this is a reasonable compromise
+	Group group = new Group("additionalPostalFields");
+	
+
+	Question question = new Question("postalAddress");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Postal Address");
+	insertLogical(question);
+
+	question = new Question("postalSuburb");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Postal Suburb");
+	insertLogical(question);
+
+	question = new Question("postalCity");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Postal City");
+	insertLogical(question);
+
+	question = new Question("postalPostcode");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Post Code");
+	insertLogical(question);
+	
+	// avoid having to update the group if insert it here
+	insertLogical(group);
+	
+end
+

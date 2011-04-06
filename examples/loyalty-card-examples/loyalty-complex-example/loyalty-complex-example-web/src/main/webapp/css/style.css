@@ -1,0 +1,174 @@
+html {
+	background-color: #fdeadb;
+	font-family: Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
+	font-size: 0.875em;
+	line-height: 1.286em;
+}
+
+div,p {
+	margin: 0;
+	padding: 0;
+}
+
+.Questionnaire {
+	font-weight: bold;
+}
+
+.Question {
+	clear: both;
+	margin: 1em 0;
+	width: 100%;
+	font-weight: normal;
+}
+
+.Question .preLabel, .preLabel {
+	float: left;
+	padding-right: 1em;
+	width: 28em;
+}
+
+.Controls,
+.yesNoControls {
+	text-align: center;
+	height: 22px;
+	/*margin-top: 3em;*/
+	margin:1em 0;
+	width: 100%;
+}
+
+.Controls a.disabled:link, .Controls a.disabled:visited, .Controls a.disabled:hover, .Controls a.disabled:focus, a.disabled:link, a.disabled:visited, a.disabled:hover, a.disabled:focus {
+	color:#000000;
+}
+.Controls a:link, .Controls a:visited, .Controls a:hover, .Controls a:focus, .Controls a:active {
+	margin:0 auto;
+}
+.Controls a:link, .Controls a:visited, .Controls a:hover, .Controls a:focus, .Controls a:active, a.Control:link, a.Control:visited, a.Control:hover, a.Control:focus, a.Control:active,
+.yesNoControls a:link,.yesNoControls a:visited,.yesNoControls a:hover,.yesNoControls a:focus,.yesNoControls a:active {
+	background:transparent url(../images/button_standard.gif) no-repeat scroll center center;
+	color:#F8E9D9;
+	display:block;
+	font-weight:400;
+	height:22px;
+	line-height:22px;
+	text-align:center;
+	text-decoration:none;
+	width:135px;
+}
+
+.Controls .previous {
+	float: left;
+}
+
+.Controls .next {
+	float: right;
+}
+
+a.back, a.next {
+	float:left;
+}
+
+
+#bodyContent {
+	width: 80%;
+	margin: 0 auto;
+	padding: 1em;
+	background: #fff2ea;
+}
+
+.Group {
+	margin: 1em 0;
+	padding: 0;
+}
+
+.section {
+	min-height: 4em;
+}
+
+.section > p {
+	width: 1em;
+	text-align: center;
+	color: yellow;
+	background: url(../images/background.png) no-repeat;
+	width: 60px;
+	height: 60px;
+	vertical-align: middle;
+	line-height: 60px;
+	font-size: 1.7em;
+	margin: 0;
+	padding: 0;
+	z-index: 5;
+}
+
+.section > .GroupItems {
+	margin: -60px 0 0 80px;
+	z-index: -5;
+	padding: 0 0 10px 0;
+	border-top: 1px solid #242424;
+}
+
+#LoyaltyQuestionnaire_label {
+	font-size: 1.5em;
+	margin: 0 auto;
+	width: 60%;
+}
+
+.row .GroupItems div {
+	display: inline;
+}
+
+.row .GroupItems .preLabel {
+	float: none;
+	display: inline;
+}
+
+.row .GroupItems .first .preLabel {
+	float: left;
+	display: block;
+}
+
+.postLabel {
+	padding: 0 0.5em 0 0;
+}
+
+.short .postLabel {
+	padding: 0;
+}
+
+.short input {
+	width: 4em;
+}
+
+.error input,
+.error select,
+.error .radioGroup {
+	border: 2px solid #ff8080;
+}
+
+.InvalidAnswer {
+	color: red;
+	font-weight: bold;
+	padding-left: 29.2em;
+}
+
+div.InvalidAnswer.requiredMissing {
+	display: none;
+}
+
+.yesNoButtons {
+	margin: 0.5em 0;
+}
+
+.yesNoButtons input {
+	display: none;
+}
+
+.yesNoButtons .yesNoControls a {
+	display: inline-block;
+	float: none;
+}
+
+.yesNoButtons .answer {
+	width: 2em;
+	display: inline-block;
+}
+

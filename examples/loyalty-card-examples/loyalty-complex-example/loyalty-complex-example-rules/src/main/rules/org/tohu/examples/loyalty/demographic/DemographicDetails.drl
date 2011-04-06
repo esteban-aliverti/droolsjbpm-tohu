@@ -1,0 +1,332 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Derek Rendall
+ */
+package org.tohu.examples.loyalty.page2
+
+import java.util.Calendar;
+
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+
+
+rule "DemographicDetailsPage"
+dialect "mvel"
+then
+	Group page = new Group("DemographicDetailsPage");
+	page.setLabel("Let us know what you really, really want!");		
+
+	Group incomeDetails = new Group("IncomeDetails");
+	incomeDetails.setLabel("4");
+	page.addItem(incomeDetails.getId());
+	incomeDetails.setPresentationStyles({"section"});
+	insertLogical(incomeDetails);		
+	
+	Group householdDetails = new Group("Household");
+	householdDetails.setLabel("5");
+	page.addItem(householdDetails.getId());
+	householdDetails.setPresentationStyles({"section"});
+	insertLogical(householdDetails);		
+	
+	Group promotionalDetails = new Group("PromotionalMaterial");
+	promotionalDetails.setLabel("6");
+	page.addItem(promotionalDetails.getId());
+	promotionalDetails.setPresentationStyles({"section"});
+	insertLogical(promotionalDetails);		
+
+	insertLogical(page);
+end
+
+
+rule "incomeDetailsSection"
+dialect "mvel" 
+when
+	g : Group(id == "IncomeDetails", items == null)
+	// Do not use an insertLogical as the items == null will change, causing the 
+	// questions to dissappear
+then		
+	MultipleChoiceQuestion mcQuestion = new MultipleChoiceQuestion("incomeBracket");
+	g.addItem(mcQuestion.getId());
+	mcQuestion.setAnswerType(Question.TYPE_TEXT);
+	mcQuestion.setPreLabel("Income Bracket");
+	mcQuestion.setPossibleAnswers({
+		new PossibleAnswer(null, "Please select ..."),
+		new PossibleAnswer("1", "Less than 20,000"),
+		new PossibleAnswer("2", "20,000 to 39,999"),
+		new PossibleAnswer("3", "40,000 to 59,999"),
+		new PossibleAnswer("4", "60,000 to 99,999"),
+		new PossibleAnswer("5", "100,000 and over")}
+	);
+	insert(mcQuestion);
+
+	Question question = new Question("ownHome");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Do you own your own home?");
+	insert(question);
+	
+	update(g);
+end
+	
+rule "householdSection"
+dialect "mvel" 
+when
+	g : Group(id == "Household", items == null)
+	// Do not use an insertLogical as the items == null will change, causing the 
+	// questions to dissappear
+then		
+
+	Question question = new Question("numberOfPeople");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_NUMBER);
+	question.setPreLabel("Number of people in the household");
+	question.setPresentationStyles({"first"});
+	question.setAnswer(1L);
+	insert(question);
+
+	// Note: items that are listed but never inserted as facts are ignored
+	// which is exactly the behaviour we desire
+	g.addItem("childrenQuestion");
+	
+	
+	update(g);
+end
+
+
+rule "children"
+dialect "mvel" 
+when
+	Question(id == "numberOfPeople", answer > 1)
+then
+
+	Group group = new Group("childrenQuestion");
+	
+
+	Question question = new Question("haveChildren");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Are there children under 18 in the household?");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	group.addItem("childrenAgeRanges");
+	insertLogical(group);
+end
+
+
+rule "childrenAgeSection"
+dialect "mvel" 
+when
+	Question(id == "haveChildren", answer == "true")
+then
+
+	Group group = new Group("childrenAgeRanges");
+	
+
+	Question question = new Question("preschool");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Preschoolers");
+	question.setPostLabel("(please tick all that apply)");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	question = new Question("primary");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Primary");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	question = new Question("intermediate");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Intermediate");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	question = new Question("secondary");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Secondary");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	question = new Question("tertiary");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Tertiary");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	question = new Question("other");
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Other");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	insertLogical(group);
+end
+
+
+
+rule "promotionalMaterialSection"
+dialect "mvel" 
+when
+	g : Group(id == "PromotionalMaterial", items == null)
+	// Do not use an insertLogical as the items == null will change, causing the 
+	// questions to dissappear
+then		
+
+	Question question = new Question("receiveMaterials");
+	g.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Are you interested in receiving promotional materials?");
+	question.setPresentationStyles({"first"});
+	question.setAnswer(false);
+	insert(question);
+	
+	// Compromise where we set up the relationship to child ahead of time
+	// Avoids having to search for the group when the list of questions
+	// is also managed by truth maintenance.
+	g.addItem("promotionalTypesGroup");
+	
+	
+	update(g);
+end
+
+rule "promotionalTypes"
+dialect "mvel" 
+when
+	Question(id == "receiveMaterials", answer == "true")
+then
+
+	Group group = new Group("promotionalTypesGroup");
+	
+	// we could create different subgroups for the different logic elements
+	// but it is easier to revert to the parent specifying the child approach
+	group.setItems({
+		"books",
+		"music",
+		"crafts",
+		"motoring",
+		"cooking",
+		"homeImprovement",
+		"travel",
+		"toys",
+		"wine",
+		"investing"});
+	insertLogical(group);
+	
+
+	// Only do the fields that always appear - others in different rules
+	// No need to add items as above setItems cover it.
+	Question question = new Question("books");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Books");
+	question.setPostLabel("(please tick all that apply)");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	question = new Question("music");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Music");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	question = new Question("crafts");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Crafts");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	
+	question = new Question("motoring");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Motoring");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	question = new Question("cooking");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Cooking");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	question = new Question("wine");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Wine");
+	question.setAnswer(false);
+	insertLogical(question);
+	
+end
+
+rule "homeImprovement"
+when
+	Question(id == "receiveMaterials", answer == "true")
+	Question(id == "ownHome", answer == "true");
+then
+	Question question = new Question("homeImprovement");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Home Improvement");
+	question.setAnswer(false);
+	insertLogical(question);
+end
+
+rule "travel"
+when
+	Question(id == "receiveMaterials", answer == "true")
+	Question(id == "incomeBracket", answer > 2);
+then
+	Question question = new Question("travel");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Travel");
+	question.setAnswer(false);
+	insertLogical(question);
+end
+
+rule "investing"
+when
+	Question(id == "receiveMaterials", answer == "true")
+	Question(id == "incomeBracket", answer > 3);
+then
+	Question question = new Question("investing");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Investing");
+	question.setAnswer(false);
+	insertLogical(question);
+end
+
+rule "toys"
+when
+	Question(id == "receiveMaterials", answer == "true")
+	Question(id == "haveChildren", answer == "true");
+then
+	Question question = new Question("toys");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Toys");
+	question.setAnswer(false);
+	insertLogical(question);
+end
+
+
+

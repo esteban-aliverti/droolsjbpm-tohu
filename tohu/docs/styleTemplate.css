@@ -1,0 +1,338 @@
+/*
+
+notes:  
+
+from a basic level this is how the questionnaire Domain
+model is presented on the client side.
+
+a Tohu questionanire can contain any number of groups
+a group can contain any number of sub groups, which can be recursive
+a group can contain questions.
+questions can be configured to a restricted set of answerable options set 
+questions can be validated against any input typed. 
+
+<html>
+   <head>
+	....
+	....	
+   </head
+   <body>
+	<div headstuff></div>
+	<div> 
+	    ....
+            ....
+
+		Tohu plugs in here
+
+		-----------------------------------------------
+		| bodyContent                                 |
+		|   ---------------------------------------   |
+		|   |form                                 |   |
+		|   |	-------------------------------   |   |
+		|   |	|Questionnaire                |   |   |
+		|   |	|   ------------------------  |   |   |
+		|   |	|   |group 1               |  |   |   |
+		|   |   |   |  -----------------   |  |	  |   |
+		|   |   |   |  | inner group 1 |   |  |   |   |
+		|   |   |   |  |    Q1         |   |  |   |   |
+		|   |   |   |  |    ..         |   |  |   |   |
+		|   |   |   |  |    ..         |   |  |   |   |
+		|   |   |   |  |    QN         |   |  |   |   |
+		|   |   |   |  -----------------   |  |	  |   |
+		|   |   |   |  ....                |  |   |   |
+		|   |   |   |  -----------------   |  |	  |   |
+		|   |   |   |  | inner group N |   |  |   |   |
+		|   |   |   |  |    Q1         |   |  |   |   |
+		|   |   |   |  |    ..         |   |  |   |   |
+		|   |   |   |  |    ..         |   |  |   |   |
+		|   |   |   |  |    QN         |   |  |   |   |
+		|   |   |   |  -----------------   |  |   |   |	
+		|   |   |   ------------------------  |   |   |
+		|   |	|   ....                      |   |   |
+		|   |	|   ....                      |   |   |
+		|   |	|   ------------------------  |   |   |
+		|   |	|   |group N               |  |   |   |
+		|   |   |   |  Q1             	   |  |   |   |
+		|   |   |   |  ..                  |  |   |   |
+		|   |   |   |  ..                  |  |   |   |
+		|   |   |   |  QN                  |  |   |   |
+		|   |   |   ------------------------  |   |   |
+		|   |	------------------------------|   |   |
+		|   |                                     |   |
+		|   |   ------------------------------|   |   |
+		|   |	|navigation controls          |   |   |
+		|   |	------------------------------|   |   |
+		|   |                                     |   |
+		|   ---------------------------------------   |
+		|                                             |
+		-----------------------------------------------
+           ....
+           ....
+        </div>
+	<div footerstuff></div>
+   </body>
+</html>
+
+
+*/
+
+html {
+	/*
+		style which is applied at the root HTML element downwards
+	*/
+}
+
+div,p {
+	/*
+		style applied to any paragraph or div 
+	*/
+}
+
+#bodyContent {
+	/*
+	   style for the root html div container which wraps all the dynamic html
+	   structure
+	*/	
+}
+
+#xxxxxxxxx_label {
+	/*
+		styling which applies to the heading of your questionnaire.
+		this happens to be a paragraph at the top of each Tohu "page"
+		the xxxxxxxx text for this selector will actually be changed 
+		to the value you provide for the "label" field of the questionnaire 
+		object you create in drools 
+	*/	
+}
+
+/**************************************/
+/*            MAIN CONTENT            */
+/**************************************/
+
+.Questionnaire {
+	/*
+		style applied to the HTML Questionnaire div container.   
+	*/
+}
+
+.Group {
+	/*
+		style which applies to a HTML div container for the Tohu termed 
+		"group" of questions from the questionnaire
+	*/	
+}
+
+.GroupItems {
+	/*
+		styling which is applied to a HTML div container for the 
+		groupItems, directly embedded within the HTML "group" div 
+		container.  A Tohu "groupItems" can contain a list of other 
+		groups or a list of questions.  
+	*/	
+}
+
+.section {
+	/*
+		If one is displaying a Tohu "group" within a "group" on 
+		the current Tohu "page" then one would use this selector
+		to provide styling for this inner group 
+		
+	*/	
+}
+
+.section > p {
+	/*
+		style that applies to any paragraph which is a child 
+		of a HTML div "section" container
+	*/	
+} 
+
+.section > .GroupItems {
+	/*
+		styling which is applied to a HTML groupItems div container 
+		directly embedded within the HTML "section" div 
+		container.  The groupItem div container will either contain 
+		another inner list of groups or all the questions for this
+		Tohu "group"
+	*/	
+}
+
+.Question {
+	/*
+		style applied to the HTML div container which wraps 
+		each question
+	*/	
+}
+
+.clearfix {
+	/*
+		another selector for the question's HTML div container, 
+		pertaining to its display properties 
+	*/	
+}
+
+.Question .preLabel, .preLabel {
+	/*
+		span style for each question's text 
+	*/	
+}
+
+.required {
+    /*
+        styling used to indicate a question is mandatory. 
+        Used by the same HTML div element as the Question 
+        selector. 
+    */
+}
+
+.radioList {
+	/*
+		styling used on a HTML UL radio list 
+	*/
+}
+
+.listItem {
+    /*
+        styling used on a list option be it for a question
+        or error 
+    */
+}
+
+.answer_radio{
+	/*
+		styling used for a question's HTML input radio element 
+	*/	
+}
+
+.answer {
+	/*
+		styling used on a question'answer.
+		used on a HTML input element 
+	*/
+}
+
+.answer_checkbox {
+	/*
+		styling used for a question's HTML input checkbox element 
+	*/
+}
+
+.postLabel {
+	/*
+		styling which applies to a questions post label span element	
+	*/	
+}
+
+.Note {
+    /*
+        style applied to a HTML paragraph which contains a
+        note relevant to the associated question
+    */  
+}
+
+
+/**************************************/
+/*             ERRORS                 */
+/**************************************/
+
+.questionErrors {
+	/*
+		styling which applies to a HTML ul container which wraps 
+		a list of all the errors applicable to the question	
+	*/	
+}
+
+.questionError {
+    /*
+        styling which applies to a HTML li listItem which displays 
+        an error message applicable to the question 
+    */
+}
+
+.error {
+
+}
+
+.error input,
+.error select,
+.error .radioGroup {
+	/*
+		styling which affects the display of the data capture 
+		input element for the question which is in error
+	*/	
+}
+
+.InvalidAnswer {
+	/*
+		styling which applies to an invalid error message if it were 
+		to be displayed.  used on a HTML div container.
+	*/	
+}
+
+.InvalidAnswer.nonDisplayed {
+    /*
+        styling used to un-display the error message. 
+        used on the same HTML div container as the InvalidAsnwer 
+        selector 
+    */	
+}
+
+.InvalidAnswer.displayed {
+    /*
+        used on the same HTML div container as the InvalidAsnwer 
+        selector  
+    */
+}
+
+
+/**************************************/
+/*             NAVIGATION             */
+/**************************************/
+
+.Controls {
+	/*
+		style to define the characteristics of the HTML div container that  
+		contains the navigation controls
+	*/	
+}
+
+.Controls a.disabled:link, .Controls a.disabled:visited, .Controls a.disabled:hover, .Controls a.disabled:focus, a.disabled:link, a.disabled:visited, a.disabled:hover, a.disabled:focus {
+	/*
+		style to enforce when any HTML anchor element is disabled 
+		within the navigation controls div container
+	*/	
+}
+
+.Controls a:link, .Controls a:visited, .Controls a:hover, .Controls a:focus, .Controls a:active {
+	/*
+		style to enforce when any HTML anchor element embedded within the 
+		navigation controls div container 
+	*/	
+}
+ 
+a.Control:link, a.Control:visited, a.Control:hover, a.Control:focus, a.Control:active {
+	/*
+		style defining the display of the anchor elements contained 
+		within the controls HTML div container
+	*/	
+}
+
+.Controls .previous {
+	/*
+		style defining the display of the "previous" navigation point contained 
+		within the controls HTML div container 
+	*/	
+}
+
+.Controls .next {
+	/*
+		style defining the display of the "next" navigation point contained 
+		within the controls HTML div container	
+	*/	
+}
+
+.buttons {
+    /*
+        styling for additional buttons
+    */
+}

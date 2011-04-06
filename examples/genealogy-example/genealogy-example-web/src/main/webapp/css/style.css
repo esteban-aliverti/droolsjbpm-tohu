@@ -1,0 +1,110 @@
+.Questionnaire > p {
+	font-size: 1.5em; 
+	font-weight: bold;
+}
+
+.person > p {
+	display: none;
+}
+
+.person > .GroupItems {
+	margin-left: 2em;
+}
+
+#root > .GroupItems {
+	margin-left: 0;
+}
+
+.fields {
+	display: inline-block;
+}
+
+.fields > p {
+	display: none;
+}
+
+.fields > .GroupItems {
+	background-color: #DDD;
+	padding: 5px;
+}
+
+.Question {
+	display: inline-block;
+}
+
+.Question .preLabel {
+	margin-right: 0.2em;
+}
+
+.InvalidAnswer.requiredMissing {
+	display: none;
+}
+
+.answer {
+	width: 5em;
+	margin-right: 1em;
+}
+
+.last .answer {
+	margin-right: 0;
+}
+
+.error .answer{
+	background-color: #FDD;
+}
+
+.Question.add {
+	display: block;
+	margin: 5px 0;
+}
+
+.icon .preLabel {
+	display: none;
+}
+
+.icon input {
+	display: none;
+}
+
+.icon a {
+	height: 20px;
+	width: 20px;
+	text-decoration: none;
+	display: inline-block;
+}
+
+.add a {
+	background: transparent url(../images/plus.gif) center center no-repeat;
+}
+
+.delete a {
+	background: transparent url(../images/minus.gif) center center no-repeat;
+}
+
+.Controls {
+	margin-top: 1em;
+}
+
+.Controls a:link,.Controls a:visited,.Controls a:hover,.Controls a:focus,.Controls a:active,a.button:link,a.button:visited,a.button:hover,a.button:focus,a.button:active
+{
+	background: transparent url(../images/button_standard.gif) center center no-repeat;
+	color: #F8E9D9;
+	height: 22px;
+	width: 85px;
+	line-height: 22px;
+	text-decoration: none;
+	text-align: center;
+	font-weight: normal;
+	display: block;
+	float: left;
+}
+
+.Controls a:link,.Controls a:visited,.Controls a:hover,.Controls a:focus,.Controls a:active
+	{
+	margin: 0 auto;
+}
+
+.Controls a.disabled:link,.Controls a.disabled:visited,.Controls a.disabled:hover,.Controls a.disabled:focus,a.disabled:link,a.disabled:visited,a.disabled:hover,a.disabled:focus
+	{
+	color: black;
+}

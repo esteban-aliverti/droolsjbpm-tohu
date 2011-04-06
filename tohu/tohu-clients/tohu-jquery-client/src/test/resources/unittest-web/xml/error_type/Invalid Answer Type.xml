@@ -1,0 +1,20 @@
+<execution-results>
+	<result identifier="changes">
+		<org.tohu.xml.ChangeCollector>
+			<delete>
+			</delete>
+			<create>
+				<entry>
+					<org.tohu.Question>
+						<id>item_1_1</id>
+						<active>true</active>
+						<answerType>movie</answerType>
+					</org.tohu.Question>
+				</entry>
+			</create>
+			<update>
+			</update>
+		</org.tohu.xml.ChangeCollector>
+	</result>
+	<fact-handle identifier="changes" externalForm="changesHandle" />
+</execution-results> 

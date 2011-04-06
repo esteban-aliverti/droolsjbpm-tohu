@@ -1,0 +1,22 @@
+.Questionnaire > p {
+	font-weight: bold;
+	font-size: 1.5em;
+}
+
+.Note > p {
+	font-weight: bold;
+	color: red;
+}
+
+.Question {
+	clear: both;
+	margin: 1em 0;
+	width: 100%;
+	font-weight: normal;
+}
+
+.Question .preLabel {
+	float: left;
+	padding-right: 1em;
+	width: 12em;
+}

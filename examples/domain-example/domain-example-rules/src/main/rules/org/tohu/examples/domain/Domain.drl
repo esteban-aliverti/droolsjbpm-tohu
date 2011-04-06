@@ -1,0 +1,62 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Damon Horrell
+ */
+package org.tohu.examples.domain
+
+import java.util.Calendar;
+
+import org.tohu.DomainModelAssociation;
+import org.tohu.Group;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+
+import org.tohu.examples.domain.Person;
+
+rule "base"
+dialect "mvel"
+then
+	Questionnaire questionnaire = new Questionnaire("myQuestionnaire");
+	questionnaire.setLabel("Domain Model Example");
+	questionnaire.setItems({"name", "age", "contact"});
+	questionnaire.setCompletionAction("extract.pdf");
+	insertLogical(questionnaire);
+	
+	Question question = new Question("contact");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Do you want us to contact you?");
+	insertLogical(question);
+end
+
+rule "person"
+when
+	person : Person();
+then
+	Question question = new Question("name");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Name:");
+	insertLogical(question);
+	insertLogical(new DomainModelAssociation(question.getId(), person, "fullName"));
+
+	question = new Question("age");
+	question.setAnswerType(Question.TYPE_NUMBER);
+	question.setPreLabel("Age:");
+	insertLogical(question);
+	insertLogical(new DomainModelAssociation(question.getId(), person, question.getId()));
+end

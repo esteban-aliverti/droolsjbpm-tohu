@@ -1,0 +1,114 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author tohu-loader 
+ *
+ * (Notice included by creating a file called Copyright.drl in the import directory)
+ */
+package org.tohu.examples.loyalty.loyalty_complex_app;
+
+import java.util.Calendar;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Answer;
+import org.tohu.Questionnaire;
+import org.tohu.support.TohuDataItemObject;
+
+import org.tohu.examples.loyalty.*;
+
+rule "Branch JointOFGroupDataItems"
+salience 75
+no-loop
+when
+	pe1 : Question(id == "onlineFoodJoint"  );
+	Answer (questionId == pe1.id , value == "true");
+	q : Questionnaire(items not contains "JointOFGroupDataItems");
+then
+	if (q.isBranched() == false) {
+		q.navigationBranch(new String[]{"JointOFGroupDataItems"}, "JointOFGroupDataItems");
+	}
+	else {
+		q.appendItem("JointOFGroupDataItems", q.getActiveItem());
+	}
+	update(q);
+end
+
+rule "JointOFGroupDataItems"
+dialect "mvel"
+no-loop
+when
+	pe1 : Question(id == "onlineFoodJoint" , answer == "true");
+then
+	Group aGroup = new Group("JointOFGroupDataItems");
+	aGroup.setLabel("Please specify the loyalty program details.");
+	aGroup.setItems({"JointOFGroup"});
+	insertLogical(aGroup);
+end
+
+rule "JointOFGroup"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointOFGroupDataItems");
+then
+	Group aGroup = new Group("JointOFGroup");
+	aGroup.setLabel("8");
+	aGroup.setItems({
+		"jofMembershipNumber",
+		"jofMembershipName",
+		"jofSpecialOffers"});
+	insertLogical(aGroup);
+end
+
+rule "jofMembershipNumber"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointOFGroup");
+then
+	Question aQuestion = new Question("jofMembershipNumber");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Membership number");
+	insertLogical(aQuestion);
+end
+
+rule "jofMembershipName"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointOFGroup");
+then
+	Question aQuestion = new Question("jofMembershipName");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Membership name");
+	insertLogical(aQuestion);
+end
+
+rule "jofSpecialOffers"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "JointOFGroup");
+then
+	Question aQuestion = new Question("jofSpecialOffers");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setPreLabel("Do you want to receive combined special offers?");
+	insertLogical(aQuestion);
+end
+

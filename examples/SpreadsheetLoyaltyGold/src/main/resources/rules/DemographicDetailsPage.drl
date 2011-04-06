@@ -1,0 +1,448 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author tohu-loader 
+ *
+ * (Notice included by creating a file called Copyright.drl in the import directory)
+ */
+package org.tohu.examples.loyalty.loyalty_complex_app;
+
+import java.util.Calendar;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Answer;
+import org.tohu.Questionnaire;
+import org.tohu.support.TohuDataItemObject;
+
+import org.tohu.examples.loyalty.*;
+
+rule "DemographicDetailsPage"
+dialect "mvel"
+no-loop
+then
+	Group aGroup = new Group("DemographicDetailsPage");
+	aGroup.setLabel("Now, a few more details");
+	aGroup.setItems({
+		"IncomeDetailItems",
+		"HouseholdItems",
+		"PromotionalMateriaItems"});
+	insertLogical(aGroup);
+end
+
+rule "IncomeDetailItems"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "DemographicDetailsPage");
+then
+	Group aGroup = new Group("IncomeDetailItems");
+	aGroup.setLabel("4");
+	aGroup.setItems({
+		"incomeBracket",
+		"ownHome"});
+	aGroup.setPresentationStyles({"section"});
+	insertLogical(aGroup);
+end
+
+rule "incomeBracket"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "IncomeDetailItems");
+then
+	MultipleChoiceQuestion aMultipleChoiceQuestion = new MultipleChoiceQuestion("incomeBracket");
+	aMultipleChoiceQuestion.setAnswerType(Question.TYPE_TEXT);
+	aMultipleChoiceQuestion.setPreLabel("Income Bracket");
+	aMultipleChoiceQuestion.setPossibleAnswers({
+		new PossibleAnswer(null, "Please select . . ."),
+		new PossibleAnswer("1", "Less than 20,000"),
+		new PossibleAnswer("2", "20,000 to 39,999"),
+		new PossibleAnswer("3", "40,000 to 59,999"),
+		new PossibleAnswer("4", "60,000 to 99,999"),
+		new PossibleAnswer("5", "100,000 and over")});
+	insertLogical(aMultipleChoiceQuestion);
+end
+
+rule "ownHome"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "IncomeDetailItems");
+then
+	Question aQuestion = new Question("ownHome");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setPreLabel("Do you own your own home?");
+	insertLogical(aQuestion);
+end
+
+rule "HouseholdItems"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "DemographicDetailsPage");
+then
+	Group aGroup = new Group("HouseholdItems");
+	aGroup.setLabel("5");
+	aGroup.setItems({
+		"numberOfPeople",
+		"children"});
+	aGroup.setPresentationStyles({"section"});
+	insertLogical(aGroup);
+end
+
+rule "numberOfPeople"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "HouseholdItems");
+then
+	Question aQuestion = new Question("numberOfPeople");
+	aQuestion.setAnswerType(Question.TYPE_NUMBER);
+	aQuestion.setAnswer(1L);
+	aQuestion.setPreLabel("Number of people in the household");
+	insertLogical(aQuestion);
+end
+
+rule "Validate numberTooFewValidation 53"
+when
+	pe1 : Question(id == "numberOfPeople" , answered == "true", answer < "1");
+then
+	insertLogical(new InvalidAnswer("numberOfPeople", "There must be at least one person in the household"));
+end
+
+rule "Validate numberTooManyValidation 55"
+when
+	pe1 : Question(id == "numberOfPeople" , answered == "true", answer > "15");
+then
+	insertLogical(new InvalidAnswer("numberOfPeople", "The expected maximum for immediate family is 15 - please use 15 if there are more in the household"));
+end
+
+rule "children"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "HouseholdItems");
+	pe1 : Question(id == "numberOfPeople" , answer > "1");
+then
+	Group aGroup = new Group("children");
+	aGroup.setItems({
+		"haveChildren",
+		"childrenAgesRanges"});
+	insertLogical(aGroup);
+end
+
+rule "haveChildren"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "children");
+then
+	Question aQuestion = new Question("haveChildren");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Are there children under 18 in the household?");
+	insertLogical(aQuestion);
+end
+
+rule "childrenAgesRanges"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "children");
+	pe1 : Question(id == "haveChildren" , answer == "true");
+then
+	Group aGroup = new Group("childrenAgesRanges");
+	aGroup.setItems({
+		"preschool",
+		"primary",
+		"intermediate",
+		"secondary",
+		"tertiary",
+		"other"});
+	insertLogical(aGroup);
+end
+
+rule "preschool"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "childrenAgesRanges");
+then
+	Question aQuestion = new Question("preschool");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Preschoolers");
+	aQuestion.setPostLabel("(please tick all that apply)");
+	insertLogical(aQuestion);
+end
+
+rule "primary"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "childrenAgesRanges");
+then
+	Question aQuestion = new Question("primary");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Primary");
+	insertLogical(aQuestion);
+end
+
+rule "intermediate"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "childrenAgesRanges");
+then
+	Question aQuestion = new Question("intermediate");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Intermediate");
+	insertLogical(aQuestion);
+end
+
+rule "secondary"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "childrenAgesRanges");
+then
+	Question aQuestion = new Question("secondary");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Secondary");
+	insertLogical(aQuestion);
+end
+
+rule "tertiary"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "childrenAgesRanges");
+then
+	Question aQuestion = new Question("tertiary");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Tertiary");
+	insertLogical(aQuestion);
+end
+
+rule "other"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "childrenAgesRanges");
+then
+	Question aQuestion = new Question("other");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Other");
+	insertLogical(aQuestion);
+end
+
+rule "PromotionalMateriaItems"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "DemographicDetailsPage");
+then
+	Group aGroup = new Group("PromotionalMateriaItems");
+	aGroup.setLabel("6");
+	aGroup.setItems({
+		"receiveMaterials",
+		"promotionalType"});
+	aGroup.setPresentationStyles({"section"});
+	insertLogical(aGroup);
+end
+
+rule "receiveMaterials"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "PromotionalMateriaItems");
+then
+	Question aQuestion = new Question("receiveMaterials");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setPreLabel("Are you interested in receiving promotional materials?");
+	aQuestion.setPresentationStyles({"first"});
+	insertLogical(aQuestion);
+end
+
+rule "promotionalType"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "PromotionalMateriaItems");
+	pe1 : Question(id == "receiveMaterials" , answer == "true");
+then
+	Group aGroup = new Group("promotionalType");
+	aGroup.setItems({
+		"books",
+		"music",
+		"craft",
+		"motoring",
+		"cooking",
+		"homeImprovement",
+		"travel",
+		"toys",
+		"wine",
+		"investing"});
+	insertLogical(aGroup);
+end
+
+rule "books"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "promotionalType");
+then
+	Question aQuestion = new Question("books");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Books");
+	aQuestion.setPostLabel("(please tick all that apply)");
+	insertLogical(aQuestion);
+end
+
+rule "music"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "promotionalType");
+then
+	Question aQuestion = new Question("music");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Music");
+	insertLogical(aQuestion);
+end
+
+rule "craft"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "promotionalType");
+then
+	Question aQuestion = new Question("craft");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Crafts");
+	insertLogical(aQuestion);
+end
+
+rule "motoring"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "promotionalType");
+then
+	Question aQuestion = new Question("motoring");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Motoring");
+	insertLogical(aQuestion);
+end
+
+rule "cooking"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "promotionalType");
+then
+	Question aQuestion = new Question("cooking");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Cooking");
+	insertLogical(aQuestion);
+end
+
+rule "homeImprovement"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "promotionalType");
+	pe1 : Question(id == "receiveMaterials" , answer == "true");
+	pe2 : Question(id == "ownHome" , answer == "true");
+then
+	Question aQuestion = new Question("homeImprovement");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Home Improvement");
+	insertLogical(aQuestion);
+end
+
+rule "travel"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "promotionalType");
+	pe1 : Question(id == "receiveMaterials" , answer == "true");
+	pe2 : MultipleChoiceQuestion(id == "incomeBracket" , answer > "2");
+then
+	Question aQuestion = new Question("travel");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Travel");
+	insertLogical(aQuestion);
+end
+
+rule "toys"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "promotionalType");
+	pe1 : Question(id == "receiveMaterials" , answer == "true");
+	pe2 : Question(id == "haveChildren" , answer == "true");
+then
+	Question aQuestion = new Question("toys");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Toys");
+	insertLogical(aQuestion);
+end
+
+rule "wine"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "promotionalType");
+then
+	Question aQuestion = new Question("wine");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Wine");
+	insertLogical(aQuestion);
+end
+
+rule "investing"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "promotionalType");
+	pe1 : Question(id == "receiveMaterials" , answer == "true");
+	pe2 : MultipleChoiceQuestion(id == "incomeBracket" , answer > "3");
+then
+	Question aQuestion = new Question("investing");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setAnswer(false);
+	aQuestion.setPreLabel("Investing");
+	insertLogical(aQuestion);
+end
+

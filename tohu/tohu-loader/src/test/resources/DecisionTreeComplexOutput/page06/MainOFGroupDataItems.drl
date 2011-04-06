@@ -1,0 +1,129 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author tohu-loader 
+ *
+ * (Notice included by creating a file called Copyright.drl in the import directory)
+ */
+package org.tohu.examples.loyalty.loyalty_complex_app;
+
+import java.util.Calendar;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Answer;
+import org.tohu.Questionnaire;
+import org.tohu.support.TohuDataItemObject;
+
+import org.tohu.examples.loyalty.*;
+
+rule "Branch MainOFGroupDataItems"
+salience 75
+no-loop
+when
+	pe1 : Question(id == "onlineFood"  );
+	Answer (questionId == pe1.id , value == "true");
+	q : Questionnaire(items not contains "MainOFGroupDataItems");
+then
+	if (q.isBranched() == false) {
+		q.navigationBranch(new String[]{"MainOFGroupDataItems"}, "MainOFGroupDataItems");
+	}
+	else {
+		q.appendItem("MainOFGroupDataItems", q.getActiveItem());
+	}
+	update(q);
+end
+
+rule "MainOFGroupDataItems"
+dialect "mvel"
+no-loop
+when
+	pe1 : Question(id == "onlineFood" , answer == "true");
+then
+	Group aGroup = new Group("MainOFGroupDataItems");
+	aGroup.setLabel("Please specify the loyalty program details.");
+	aGroup.setItems({"MainOFGroup"});
+	insertLogical(aGroup);
+end
+
+rule "MainOFGroup"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainOFGroupDataItems");
+then
+	Group aGroup = new Group("MainOFGroup");
+	aGroup.setLabel("8");
+	aGroup.setItems({
+		"mofMembershipNumber",
+		"mofMembershipName",
+		"mofSpecialOffers"});
+	insertLogical(aGroup);
+end
+
+rule "mainOFPoints"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainOFGroup");
+	pe1 : Question(id == "onlineFood" , answer == "true");
+then
+	TohuDataItemObject aTohuDataItemObject = new TohuDataItemObject("mainOFPoints");
+	aTohuDataItemObject.setAnswerType(Question.TYPE_NUMBER);
+	aTohuDataItemObject.setAnswer(5L);
+	aTohuDataItemObject.setCategory("Points");
+	aTohuDataItemObject.setName("Main Person has a OF Card");
+	insertLogical(aTohuDataItemObject);
+end
+
+rule "mofMembershipNumber"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainOFGroup");
+then
+	Question aQuestion = new Question("mofMembershipNumber");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Membership number");
+	insertLogical(aQuestion);
+end
+
+rule "mofMembershipName"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainOFGroup");
+then
+	Question aQuestion = new Question("mofMembershipName");
+	aQuestion.setAnswerType(Question.TYPE_TEXT);
+	aQuestion.setPreLabel("Membership name");
+	insertLogical(aQuestion);
+end
+
+rule "mofSpecialOffers"
+dialect "mvel"
+no-loop
+when
+	$group : Group (id == "MainOFGroup");
+then
+	Question aQuestion = new Question("mofSpecialOffers");
+	aQuestion.setAnswerType(Question.TYPE_BOOLEAN);
+	aQuestion.setPreLabel("Do you want to receive combined special offers?");
+	insertLogical(aQuestion);
+end
+

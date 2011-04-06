@@ -1,0 +1,206 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Derek Rendall
+ */
+package org.tohu.examples.loyalty
+
+import java.util.Calendar;
+
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+
+rule "sections"
+dialect "mvel"
+then
+	Questionnaire questionnaire = new Questionnaire("LoyaltyQuestionnaire");
+	questionnaire.setLabel("Solnet Loyalty Card Signup");
+	questionnaire.setCompletionAction("extract.pdf");
+	questionnaire.setItems({"PersonalDetails", "MainAddress", "PostalAddress"});
+	insertLogical(questionnaire);
+	
+	Group personalDetails = new Group("PersonalDetails");
+	personalDetails.setLabel("1");
+	personalDetails.setPresentationStyles({"section"});
+	personalDetails.setItems({
+		"givenNames",
+		"surname",
+		"dob",
+		"email",
+		"phone"});
+	insertLogical(personalDetails);		
+/*
+		"canContact",
+*/
+	
+	Group mainAddress = new Group("MainAddress");
+	mainAddress.setLabel("2");
+	mainAddress.setPresentationStyles({"section"});
+	mainAddress.setItems({
+		"streetAddress",
+		"suburb",
+		"city",
+		"postcode"});
+	insertLogical(mainAddress);		
+	
+	Group postalAddress = new Group("PostalAddress");
+	postalAddress.setLabel("3");
+	postalAddress.setPresentationStyles({"section"});
+	postalAddress.setItems({"differentPostalAddress", "additionalPostalFields"});
+	insertLogical(postalAddress);			
+end
+
+/*
+rule "canContact"
+dialect "mvel" 
+when
+	Question(id == "email", answer != null)
+then
+	Question question = new Question("canContact");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Can we email you");
+	insertLogical(question);
+end
+*/
+
+
+rule "personalDetailsSection"
+dialect "mvel" 
+when
+then		
+	Question question = new Question("givenNames");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Given or first names");
+	insertLogical(question);
+
+	question = new Question("surname");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Family name");
+	insertLogical(question);
+
+	question = new Question("dob");
+	question.setPresentationStyles({"datepicker"});
+	question.setAnswerType(Question.TYPE_DATE);
+	question.setPreLabel("Date of birth");
+	insertLogical(question);
+
+	question = new Question("email");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Email");
+	insertLogical(question);
+
+	question = new Question("phone");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Phone");
+	insertLogical(question);
+end
+	
+	
+rule "mainAddressSection"
+dialect "mvel" 
+when
+then		
+	Question question = new Question("streetAddress");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Street Address");
+	insertLogical(question);
+
+	question = new Question("suburb");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Suburb");
+	insertLogical(question);
+
+	question = new Question("city");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("City");
+	insertLogical(question);
+
+	question = new Question("postcode");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Post Code");
+	insertLogical(question);
+end
+
+
+rule "postalAddressSection"
+dialect "mvel" 
+when
+then		
+	Question question = new Question("differentPostalAddress");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Alternative Postal Address?");
+	question.setPostLabel("(select if different to above)");
+	question.setPresentationStyles({"first"});
+	question.setAnswer(false);
+	insert(question);
+end
+
+rule "postalAddress"
+dialect "mvel" 
+when
+	Question(id == "differentPostalAddress", answer == "true")
+then
+	Group group = new Group("additionalPostalFields");
+	group.setItems({
+		"postalAddress",
+		"postalSuburb",
+		"postalCity",
+		"postalPostcode"});
+	insertLogical(group);
+	
+	Question question = new Question("postalAddress");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Postal Address");
+	insertLogical(question);
+
+	question = new Question("postalSuburb");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Postal Suburb");
+	insertLogical(question);
+
+	question = new Question("postalCity");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Postal City");
+	insertLogical(question);
+
+	question = new Question("postalPostcode");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Post Code");
+	insertLogical(question);
+end
+
+
+rule "validateEmail"
+dialect "java"
+when
+	Question(id == "email", answered == true, answer : textAnswer);
+	eval(!answer.toUpperCase().matches("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[_A-Za-z-]+)"));
+then
+	insertLogical(new InvalidAnswer("email", "This is not a valid email address"));
+end
+
+// all questions are mandatory 
+rule "required"
+when
+	question : Question(required == false);
+then
+	question.setRequired(true);
+	update(question);
+end

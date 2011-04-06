@@ -1,0 +1,149 @@
+@charset "utf-8";
+/* CSS Document */
+html {
+	background: #222 url(../images/body-bg.gif) repeat;
+	font-family: Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
+	font-size: 0.875em;
+	line-height: 1.286em;
+	overflow-y: scroll
+	}
+
+#bodyContent {
+	margin:2em 0;
+	width:100%;
+}
+
+.preLabel {
+	float:left;
+	min-width:200px;
+}
+.GroupItems div.Question {
+	clear:right;
+	display:block;
+	margin-bottom:0.2em;
+}
+
+#logo {
+	margin: 2em 0 0 0;
+}
+
+#logo a img{
+	margin: 0 auto;
+}
+
+/* progress bar presentation: */
+#progressindicator {
+	margin: 1em 0 0 0;
+	line-height:28px;
+}
+#progressbar {
+	text-align:left;
+	width: 218px;
+	height: 14px;
+	background: transparent url(../images/progress-bar.gif) top left no-repeat;
+	padding: 7px 10px;
+}
+#progressbar p {
+	text-indent:-1000px;
+	width:0;
+	height:15px;
+	padding:0;
+	margin:0;
+	font-size:8px;
+	line-height:8px;
+	background: #d5122b;
+}
+#progressindicator img {
+	margin: 0 auto;
+}
+.progress {
+	display:none;
+}
+
+form div {
+	margin-bottom: 0;
+}
+
+.ui-widget {
+margin-bottom:1em;
+padding-bottom:3em;
+}
+
+
+
+h1, h2, h3, h4 {
+	margin: 0;
+	padding: 0;
+	font-size: inherit;
+	text-align:center;
+}
+
+textarea, input {
+	padding: 0;
+	margin: 0;
+}
+
+hr, p, ul, ol, dl, pre, blockquote, address, table, form {
+	margin: 0;
+}
+
+.Questionnaire > div , .Controls {
+	padding: 1em 2em;
+}
+
+.section {
+margin:1em;
+position:relative;
+}
+
+.section > p {
+	position: absolute;
+	top: 0;
+	left: -1em;
+	background: none;
+}
+
+
+
+.Control {
+padding:0.4em 1em 0.4em 20px;
+position:relative;
+text-decoration:none;
+}
+
+.Control span.ui-icon {
+left:0.2em;
+margin:-8px 5px 0 0;
+position:absolute;
+top:50%;
+}
+
+.Controls a {
+	margin-right: 1em;
+}
+
+
+
+.ui-widget-content {
+	border:3px solid #999999;
+}
+
+
+/* level this bit at the bottom */
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+.clearfix {
+	display: inline-block;
+}
+html[xmlns] .clearfix {
+	display: block;
+}
+* html .clearfix {
+	height: 1%;
+}

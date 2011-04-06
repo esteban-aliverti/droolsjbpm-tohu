@@ -1,0 +1,25 @@
+<execution-results>
+	<result identifier="changes">
+		<org.tohu.xml.ChangeCollector>
+			<delete>
+			</delete>
+			<create>
+				<entry>
+					<org.tohu.Whatsit>
+						<id>item_1_1</id>
+						<presentationStyles>item_1_1Style</presentationStyles>
+						<active>true</active>
+						<preLabel>Item 1.1</preLabel>
+						<postLabel>A Simple Text Field</postLabel>
+						<required>true</required>
+						<answerType>text</answerType>
+						<textAnswer>Test Text</textAnswer>
+					</org.tohu.Whatsit>
+				</entry>
+			</create>
+			<update>
+			</update>
+		</org.tohu.xml.ChangeCollector>
+	</result>
+	<fact-handle identifier="changes" externalForm="changesHandle" />
+</execution-results> 

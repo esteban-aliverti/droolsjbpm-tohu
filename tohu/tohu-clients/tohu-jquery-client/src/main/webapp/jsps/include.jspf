@@ -1,0 +1,20 @@
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/ui.base.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/ui.core.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/ui.theme.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/ui.datepicker.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/jquery.readonly.css" />
+<script type="text/javascript" src="script/jquery/jquery-1.3.2.min.js"></script>          
+<script type="text/javascript" src="script/jquery/ui.core.js"></script>
+<script type="text/javascript" src="script/jquery/ui.datepicker.js"></script>
+<script type="text/javascript" src="script/jquery/cookie.js"></script>          
+<script type="text/javascript" src="script/jquery/sprintf.js"></script>          
+<script type="text/javascript" src="script/jquery/toxml.js"></script>          
+<script type="text/javascript" src="script/jquery/jquery.readonly.js"></script>
+<script type="text/javascript" src="script/jquery/jquery.url.packed.js"></script>
+<script type="text/javascript" src="script/dynamicUI_messages.js"></script>          
+<script type="text/javascript" src="script/dynamicUI_utility.js"></script>          
+<script type="text/javascript" src="script/dynamicUI_ajax.js"></script>
+<script type="text/javascript" src="script/dynamicUI_objects.js"></script>
+<script type="text/javascript" src="script/dynamicUI_interface.js"></script>
+<script type="text/javascript" src="script/dynamicUI_html.js"></script>
+<script type="text/javascript" src="script/dynamicUI_main.js"></script>

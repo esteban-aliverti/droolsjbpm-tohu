@@ -1,0 +1,158 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Damon Horrell
+ */
+package org.tohu.examples.genealogy
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.spi.KnowledgeHelper;
+import org.drools.runtime.ClassObjectFilter;
+
+import org.tohu.Group;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+
+rule "static"
+then
+	Map state = new HashMap();
+	state.put("index", 0);
+	insert(state);
+
+	Questionnaire questionnaire = new Questionnaire("myQuestionnaire");
+	questionnaire.setLabel("Family Tree");
+	questionnaire.setCompletionAction("extract.pdf");
+	insert(questionnaire);
+
+	createPerson(drools, questionnaire, null);
+end
+
+rule "add clicked"
+when
+	add : Question(presentationStyles contains "add", answer == true);
+	parent : Group(items contains add.id);
+then
+	add.setAnswer(null);
+	update(add);
+
+	createPerson(drools, parent, parent.getId() + "_" + nextIndex(drools));	
+end
+
+rule "delete clicked"
+no-loop
+when
+	delete : Question(presentationStyles contains "delete", answer == true);
+	person : Group(items contains delete.id);
+then
+	delete.setAnswer(null);
+	update(delete);
+
+	retract(person);
+end
+
+/*
+ * This is defined as a separate rule so that we get automatic retraction of the fields when a person is removed.
+ */
+rule "create person fields"
+when
+	person : Group(presentationStyles contains "person", personId : id);
+then
+	boolean root = personId.equals("root");
+	String prefix = personId + "_";
+	
+	Group group = new Group(prefix + "fields");
+	group.setItems(new String[]{prefix + "name", prefix + "dob", prefix + "dod", prefix + "spouse"});
+	group.setPresentationStyles(new String[]{"fields"});
+	insertLogical(group);
+	
+	Question question = new Question(prefix + "name");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Name:");
+	question.setRequired(true);
+	drools.insertLogical(question);
+
+	question = new Question(prefix + "dob");
+	question.setAnswerType(Question.TYPE_DATE);
+	question.setPreLabel("Born:");
+	drools.insertLogical(question);
+
+	question = new Question(prefix + "dod");
+	question.setAnswerType(Question.TYPE_DATE);
+	question.setPreLabel("Died:");
+	drools.insertLogical(question);
+	
+	question = new Question(prefix + "spouse");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Spouse:");
+	question.setPresentationStyles(new String[]{"last"});
+	drools.insertLogical(question);
+
+	if (!root) {
+		question = new Question(prefix + "delete");
+		question.setAnswerType(Question.TYPE_BOOLEAN);
+		question.setPreLabel("Delete");
+		question.setPresentationStyles(new String[]{"icon", "delete"});
+		drools.insertLogical(question);
+	}
+	
+	question = new Question(prefix + "add");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Add child");
+	question.setPresentationStyles(new String[]{"icon", "add"});
+	drools.insertLogical(question);
+end
+
+rule "remove orphans"
+when
+	person : Group(presentationStyles contains "person");
+	not(exists(Group(items contains person.id)));
+then
+	retract(person);
+end
+
+function void createPerson(KnowledgeHelper drools, Group parent, String personId) {
+	boolean root = personId == null;
+	if (root) {
+		personId = "root";
+	}
+	String prefix = personId + "_";
+
+	List items = new ArrayList();
+	if (parent.getItems() != null) {
+		items.addAll(Arrays.asList(parent.getItems()));
+	}
+	items.add(personId);
+	parent.setItems(items.toArray());
+	drools.update(parent);
+	
+	Group person = new Group(personId);
+	person.setItems(new String[]{prefix + "fields", prefix + "delete", prefix + "add"});
+	person.setPresentationStyles(new String[]{"person"});
+	drools.insertLogical(person);
+}
+
+function int nextIndex(KnowledgeHelper drools) {
+	Map state = (Map)new ArrayList(drools.getKnowledgeRuntime().getObjects(new ClassObjectFilter(Map.class))).get(0);
+	Integer index = (Integer)state.remove("index");
+	index++;
+	state.put("index", index);
+	drools.update(state);
+	return index;	
+}

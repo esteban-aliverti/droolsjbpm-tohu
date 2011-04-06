@@ -1,0 +1,65 @@
+<execution-results>
+	<result identifier="activeObjects">
+		<query-results>
+			<identifiers>
+				<identifier>object</identifier>
+			</identifiers>
+			<row>
+				<org.tohu.Question>
+					<id>item_6_1</id>
+					<presentationStyles>item_6_1Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 6.1</preLabel>
+					<postLabel>Simple Text Field</postLabel>
+					<required>true</required>
+					<answerType>text</answerType>
+					<textAnswer>Item 6.1 Text</textAnswer>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_6_1Handle" />
+			</row>
+			<row>
+				<org.tohu.Questionnaire>
+					<id>questionnaire2</id>
+					<clientDateFormat>dd/mm/yyyy</clientDateFormat>
+					<presentationStyles>questionnaire2Style</presentationStyles>
+					<active>true</active>
+					<label>Questionnaire 2</label>
+					<items>group1,group6</items>
+          <availableItems>group1,group6</availableItems>
+					<activeItem>group6</activeItem>
+					<completionAction>#return</completionAction>
+					<invalidAnswers>true</invalidAnswers>
+					<enableActionValidation>false</enableActionValidation>						
+				</org.tohu.Questionnaire>
+				<fact-handle externalForm="questionnaire2Handle" />
+			</row>
+			<row>
+				<org.tohu.InvalidAnswer>
+					<questionId>item_6_1</questionId>
+					<reason>Item 6.1 Error</reason>
+					<type>ErrorType1</type>
+				</org.tohu.InvalidAnswer>
+				<fact-handle externalForm="item6_1Error" />
+			</row>
+			<row>
+				<org.tohu.Group>
+					<id>group6</id>
+					<presentationStyles>group6Style</presentationStyles>
+					<active>true</active>
+					<label>Group 6</label>
+					<items>item_6_1,item_6_2</items>
+				</org.tohu.Group>
+				<fact-handle externalForm="group6Handle" />
+			</row>
+			<row>
+				<org.tohu.Note>
+					<id>item_6_2</id>
+					<presentationStyles>item_6_2Style</presentationStyles>
+					<active>true</active>
+					<label>Item 6.2</label>
+				</org.tohu.Note>
+				<fact-handle externalForm="item_6_2Handle" />
+			</row>
+		</query-results>
+	</result>
+</execution-results>

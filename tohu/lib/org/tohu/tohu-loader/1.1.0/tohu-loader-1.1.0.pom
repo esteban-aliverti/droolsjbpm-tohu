@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>tohu</artifactId>
+    <groupId>org.tohu</groupId>
+    <version>1.1.0</version>
+  </parent>
+
+  <artifactId>tohu-loader</artifactId>
+  <packaging>jar</packaging>
+  <name>Tohu :: Loader</name>
+  <version>1.1.0</version>
+   <dependencies>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>3.5-FINAL</version>
+      <scope>compile</scope>
+    </dependency>
+       
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.7.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.3.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>3.1.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.tohu</groupId>
+      <artifactId>tohu-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.0.2</version>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1.1</version>
+
+		<!-- This configuration causes scanning of an Excel file every 5 seconds and if -->
+		<!-- changed the new rule files are created and copied to the drools destination directory. -->
+        <configuration>
+          <mainClass>org.tohu.load.PeriodicRuleLoader</mainClass>
+          <arguments>
+          	<argument>${rules-spreadsheet-file}</argument>
+          	<argument>${rules-destination-dir}</argument>
+          	<argument>${rules-import-dir}</argument>
+          	<argument>${drools-destination-dir}</argument>
+          </arguments>
+        </configuration>
+
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <site-deploy>${basedir}/../</site-deploy>
+    <project-to-load>../../TestProject</project-to-load>
+    <rules-spreadsheet-file>${project-to-load}/src/main/resources/rules/SampleDecisionTreeComplex.xls</rules-spreadsheet-file>
+    <rules-destination-dir>${project-to-load}/target/temp-rules-dir</rules-destination-dir>
+    <rules-import-dir>${project-to-load}/src/main/resources/rules</rules-import-dir>
+    <drools-destination-dir>${project-to-load}/src/main/resources/rules</drools-destination-dir>
+  </properties>
+  
+</project>

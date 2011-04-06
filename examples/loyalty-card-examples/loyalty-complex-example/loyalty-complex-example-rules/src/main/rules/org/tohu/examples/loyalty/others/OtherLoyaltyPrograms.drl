@@ -1,0 +1,159 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Derek Rendall
+ */
+package org.tohu.examples.loyalty.others
+
+import java.util.Calendar;
+
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+
+
+	
+
+
+rule "MainOtherLoyaltyProgramsPage"
+dialect "mvel"
+then
+	Group page = new Group("MainOtherLoyaltyProgramsPage");
+	page.setLabel("Please specify the other loyalty programs for the main applicant.");		
+	
+	Group group = new Group("mainNameSummary");
+	page.addItem(group.getId());
+	// facts have already been defined
+	group.setItems({"givenNames", "surname"});
+	group.setPresentationStyles({"readonly", "row"});
+	insertLogical(group);
+
+	personalDetails = new Group("LoyaltyPrograms");
+	personalDetails.setLabel("7");
+	page.addItem(personalDetails.getId());
+	personalDetails.setPresentationStyles({"section"});
+	insertLogical(personalDetails);		
+
+
+	Question question = new Question("budgetAirways");
+	personalDetails.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Budget Airways?");
+	question.setPresentationStyles({"yesNoButtons"});
+	question.setAnswer(false);
+	insertLogical(question);
+
+	question = new Question("onlineFood");
+	personalDetails.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Online Food?");
+	question.setPresentationStyles({"yesNoButtons"});
+	question.setAnswer(false);
+	insertLogical(question);
+
+	question = new Question("mochaCoffee");
+	personalDetails.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Mocha Coffee?");
+	question.setPresentationStyles({"yesNoButtons"});
+	question.setAnswer(false);
+	insertLogical(question);
+
+	
+	insertLogical(page);
+end
+
+
+
+rule "AddJointLoyaltyProgramsPage"
+dialect "mvel"
+salience 10
+no-loop
+when
+	Question(id == "applicationType", answer == "2")
+	questionnaire : Questionnaire(branched == false, items not contains "JointLoyaltyProgramsPage");
+then
+	questionnaire.appendItem("JointLoyaltyProgramsPage", "MainOtherLoyaltyProgramsPage");
+	update(questionnaire);
+end
+
+rule "JointLoyaltyProgramsPage"
+dialect "mvel"
+when
+	Question(id == "applicationType", answer == "2")
+then
+	Group page = new Group("JointLoyaltyProgramsPage");
+	page.setLabel("Please specify the other loyalty programs for the joint applicant.");		
+	
+	Group group = new Group("jointSummary");
+	page.addItem(group.getId());
+	// facts have already been defined
+	group.setItems({
+		"extraGivenNames",
+		"extraSurname"
+	});
+	group.setPresentationStyles({"readonly", "row"});
+	insertLogical(group);
+	
+
+	personalDetails = new Group("JointLoyaltyPrograms");
+	personalDetails.setLabel("7+");
+	page.addItem(personalDetails.getId());
+	personalDetails.setPresentationStyles({"section"});
+	insertLogical(personalDetails);		
+
+	Question question = new Question("jointBudgetAirways");
+	personalDetails.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Budget Airways?");
+	question.setPresentationStyles({"yesNoButtons"});
+	question.setAnswer(false);
+	insertLogical(question);
+
+	question = new Question("jointOnlineFood");
+	personalDetails.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Online Food?");
+	question.setPresentationStyles({"yesNoButtons"});
+	question.setAnswer(false);
+	insertLogical(question);
+
+	question = new Question("jointMochaCoffee");
+	personalDetails.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Mocha Coffee?");
+	question.setPresentationStyles({"yesNoButtons"});
+	question.setAnswer(false);
+	insertLogical(question);
+	
+	insertLogical(page);
+end
+
+rule "RemoveJointLoyaltyProgramsPage"
+dialect "mvel"
+salience 100
+no-loop
+when
+	Question(id == "applicationType", answer == "1")
+	questionnaire : Questionnaire(items contains "JointLoyaltyProgramsPage");
+then
+	questionnaire.removeItem("JointLoyaltyProgramsPage");
+	update(questionnaire);
+end
+

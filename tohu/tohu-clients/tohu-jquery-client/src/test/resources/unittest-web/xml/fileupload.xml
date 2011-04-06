@@ -1,0 +1,45 @@
+<execution-results>
+	<result identifier="activeObjects">
+		<query-results>
+			<identifiers>
+				<identifier>object</identifier>
+			</identifiers>
+			<row>
+				<org.tohu.Questionnaire>
+					<id>questionnaire1</id>
+					<clientDateFormat>dd/mm/yyyy</clientDateFormat>
+					<presentationStyles>questionnaire1Style</presentationStyles>
+					<active>true</active>
+					<label>Questionnaire 1</label>
+					<items>group1</items>
+          <availableItems>group1</availableItems>
+					<completionAction>upload</completionAction>
+					<enableActionValidation>false</enableActionValidation>					
+					<invalidAnswers>false</invalidAnswers>
+				</org.tohu.Questionnaire>
+				<fact-handle externalForm="questionnaire1Handle" />
+			</row>
+			<row>
+				<org.tohu.Group>
+					<id>group1</id>
+					<presentationStyles>group1Style</presentationStyles>
+					<active>true</active>
+					<label>Group 1</label>
+					<items>item_1_1</items>
+				</org.tohu.Group>
+				<fact-handle externalForm="group1Handle" />
+			</row>
+			<row>
+				<org.tohu.Question>
+					<id>item_1_1</id>
+					<presentationStyles>file,item_1_1Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 1.1</preLabel>
+					<postLabel>File Upload</postLabel>
+					<answerType>text</answerType>
+				</org.tohu.Question>
+				<fact-handle externalForm="item_1_1Handle" />
+			</row>
+		</query-results>
+	</result>
+</execution-results>

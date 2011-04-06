@@ -1,0 +1,60 @@
+<execution-results>
+	<result identifier="changes">
+		<org.tohu.xml.ChangeCollector>
+			<delete>
+			</delete>
+			<create>
+				<entry>
+					<org.tohu.Question>
+						<id>item_2_1</id>
+						<presentationStyles>item_2_1Style</presentationStyles>
+						<active>true</active>
+						<preLabel>Item 2.1</preLabel>
+						<postLabel>Simple Text Field</postLabel>
+						<required>true</required>
+						<answerType>text</answerType>
+						<textAnswer>Item 2.1 Text</textAnswer>
+					</org.tohu.Question>
+					<fact-handle externalForm="item_2_1Handle"/> 
+				</entry>
+				<entry>
+					<org.tohu.InvalidAnswer>
+						<questionId>item_2_2</questionId>
+						<type>ErrorType3</type>
+						<reason>Item 2.2 Error 3</reason>
+					</org.tohu.InvalidAnswer>
+					<fact-handle externalForm="item_2_2Error3Handle"/> 
+				</entry>
+				<entry>
+					<org.tohu.InvalidAnswer>
+						<questionId>item_2_2</questionId>
+						<type>ErrorType1</type>
+						<reason>Item 2.2 Error 1</reason>
+					</org.tohu.InvalidAnswer>
+					<fact-handle externalForm="item_2_2Error1Handle"/> 
+				</entry>
+				<entry>
+					<org.tohu.InvalidAnswer>
+						<questionId>item_2_2</questionId>
+						<type>ErrorType2</type>
+						<reason>Item 2.2 Error 2</reason>
+					</org.tohu.InvalidAnswer>
+					<fact-handle externalForm="item_2_2Error2Handle"/> 
+				</entry>
+			</create>
+			<update>
+				<org.tohu.Question>
+					<id>item_2_2</id>
+					<presentationStyles>textarea,item_2_2Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 2.2</preLabel>
+					<postLabel>Text Area</postLabel>
+					<required>false</required>
+					<answerType>text</answerType>
+					<textAnswer>More Test Text</textAnswer>
+				</org.tohu.Question>
+			</update>
+		</org.tohu.xml.ChangeCollector>
+	</result>
+	<fact-handle identifier="changes" externalForm="changesHandle" />
+</execution-results> 

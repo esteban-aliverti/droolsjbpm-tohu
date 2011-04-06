@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/ui.base.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/ui.core.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/ui.theme.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/ui.datepicker.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/jquery.readonly.css" />
+<script type="text/javascript" src="../script/jquery/jquery-1.3.2.min.js"></script>          
+<script type="text/javascript" src="../script/jquery/ui.core.js"></script>
+<script type="text/javascript" src="../script/jquery/ui.datepicker.js"></script>
+<script type="text/javascript" src="../script/jquery/cookie.js"></script>          
+<script type="text/javascript" src="../script/jquery/sprintf.js"></script>          
+<script type="text/javascript" src="../script/jquery/toxml.js"></script>          
+<script type="text/javascript" src="../script/jquery/jquery.readonly.js"></script>
+<script type="text/javascript" src="../script/jquery/jquery.url.js"></script>
+<script type="text/javascript" src="../script/dynamicUI_messages.js"></script>          
+<script type="text/javascript" src="../script/dynamicUI_utility.js"></script>          
+<script type="text/javascript" src="../script/dynamicUI_ajax.js"></script>
+<script type="text/javascript" src="../script/dynamicUI_objects.js"></script>
+<script type="text/javascript" src="../script/dynamicUI_interface.js"></script>
+<script type="text/javascript" src="../script/dynamicUI_html.js"></script>
+<script type="text/javascript" src="../script/dynamicUI_main.js"></script>
+<script type="text/javascript">
+  var baseDroolsURL = location.href.replace(new RegExp("unittest-web.*$"), "unittest-web/xml/");
+
+  // Check JavaScript Hooks are called.
+  var calledPreQuestionnaireLoad = false;
+  var calledPreRefreshScreen = false;
+  var calledPostRefreshScreen = false;
+  var calledPreProcessDelete = false;
+  var calledPostProcessDelete = false;
+  var calledPreProcessCreate = false;
+  var calledPostProcessCreate = false;
+  var calledPreProcessUpdate = false;
+  var calledPostProcessUpdate = false;
+  var calledPreChangeEvent = false;
+  var calledPostChangeEvent = false;
+  var calledOnChangeEvent = false;
+  var calledPreActionEvent = false;
+  var calledPostActionEvent = false;
+  var calledOnActionEvent = false;
+  var calledOnGetQuestionnaireActions = false;
+  var calledOnGetObjectClass = false;
+
+  function preQuestionnaireLoad(rootID, knowledgeBase) {
+    calledPreQuestionnaireLoad = true;
+  }
+  function preRefreshScreen(resultSetObject, lastQuestionID) {
+    calledPreRefreshScreen = true;
+  }
+  function postRefreshScreen(resultSetObject, lastQuestionID) {
+    calledPostRefreshScreen = true;
+  }
+  function preProcessDelete(idObject) {
+    calledPreProcessDelete = true;
+  }
+  function postProcessDelete(idObject) {
+    calledPostProcessDelete = true;
+  }
+  function preProcessCreate(factObject) {
+    calledPreProcessCreate = true;
+  }
+  function postProcessCreate(factObject) {
+    calledPostProcessCreate = true;
+  }
+  function preProcessUpdate(factObject) {
+    calledPreProcessUpdate = true;
+  }
+  function postProcessUpdate(factObject) {
+    calledPostProcessUpdate = true;
+  }
+  function postChangeEvent(questionID, newValue) {
+    calledPostChangeEvent = true;
+  }
+  function onChangeEvent(questionID, newValue) {
+    calledOnChangeEvent = true;
+    return false;
+  }
+  function postActionEvent(actionID, actionType, action) {
+    calledPostActionEvent = true;
+  }
+  function onActionEvent(actionID, actionType, action) {
+    calledOnActionEvent = true;
+    return false;
+  }
+  function onGetQuestionnaireActions(questionnaire, hasErrors) {
+    calledOnGetQuestionnaireActions = true;
+    return null;
+  }
+  function onGetObjectClass(factObject) {
+    calledOnGetObjectClass = true;
+    return null;
+  }
+
+  function preActionEvent(actionID, actionType, action) {
+    debug("preActionEvent() TEST actionID=" + actionID + " actionType=" + actionType + " action=" + action);
+    calledPreActionEvent = true;
+    switch (actionType) {
+    case "setActive":
+      if ((action == "group6") || (action == "group1")) {
+   	    setDroolsURL(baseDroolsURL + actionType + "/" + action + ".xml");
+      }
+      else if (action == "#return") {
+     	    setDroolsURL(baseDroolsURL + actionType + "/return.xml");
+        }
+      else {
+        setDroolsURL(baseDroolsURL + "blank.xml");
+      }
+      break;
+    default:
+      // Return nothing.
+      setDroolsURL(baseDroolsURL + "blank.xml");
+    }
+  }
+	  
+  function preChangeEvent(questionID, newValue) {
+    calledPreChangeEvent = true;
+    debug("preChangeEvent() TEST questionID=" + questionID + " newValue=" + newValue);
+    // These are the questions we have dummy changes xml for.
+    switch (questionID) {
+    case "item_1_3":
+      if (newValue == "1990-01-01") {
+     	    setDroolsURL(baseDroolsURL + questionID + "/01-01-1990.xml");
+        }
+      else {
+        setDroolsURL(baseDroolsURL + "blank.xml");
+      }
+      break;
+    case "item_2_1":
+    case "item_2_2":
+    case "item_6_1":
+      if (newValue == "Test Text") {
+        setDroolsURL(baseDroolsURL + questionID + "/" + newValue + ".xml");
+      }
+      else {
+        setDroolsURL(baseDroolsURL + "blank.xml");
+      }
+      break;
+    case "item_2_3":
+      if (newValue == "2") {
+        setDroolsURL(baseDroolsURL + questionID + "/" + newValue + ".xml");
+      }
+      else {
+        setDroolsURL(baseDroolsURL + "blank.xml");
+      }
+      break;
+    case "item_3_1":
+      if (newValue == "0.2") {
+   	    setDroolsURL(baseDroolsURL + questionID + "/" + newValue + ".xml");
+      }
+      else {
+       	setDroolsURL(baseDroolsURL + "blank.xml");
+      }
+      break;
+    case "item_4_1":
+      setDroolsURL(baseDroolsURL + questionID + "/" + newValue + ".xml");
+      break;
+    case "error_type":
+        if ((newValue == "No ID") || (newValue == "Garbage") || (newValue == "HTTP Error") ||
+                (newValue == "Invalid Fact Type") || (newValue == "Invalid Answer Type") ||
+                (newValue == "Duplicate") || (newValue == "No Parent")) {
+          setDroolsURL(baseDroolsURL + questionID + "/" + newValue + ".xml");          
+        }
+        else {            
+          setDroolsURL(baseDroolsURL + "blank.xml");
+        }
+        break;
+    default:        
+      // Return nothing.
+      setDroolsURL(baseDroolsURL + "blank.xml");
+    }
+  }
+
+  var ajaxCall = jQuery.url.param("ajaxCall");
+  if (ajaxCall == null) {
+    ajaxCall = "initial";
+    //ajaxCall = "readonly";
+    //ajaxCall = "fileupload";
+    //ajaxCall = "errors";
+  }
+  $(document).ready(function() {
+	//setDebugFlag(true);
+	//setIsGUIBusyID("isGUIBusy");
+	setDroolsURL(baseDroolsURL + ajaxCall + ".xml");
+    onQuestionnaireLoad("bodyContent");
+  });
+</script>
+<title>Tohu JQuery Client Unit Test</title>
+</head>
+<body>
+<div id="bodyContent"></div>
+</body>
+</html>

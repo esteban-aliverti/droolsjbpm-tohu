@@ -1,0 +1,104 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Damon Horrell
+ */
+package org.tohu.examples.branching
+
+import java.util.Calendar;
+
+import org.tohu.Group;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+
+rule "sections"
+dialect "mvel"
+then
+	Questionnaire questionnaire = new Questionnaire("myQuestionnaire");
+	questionnaire.setLabel("Medical Questionnaire");
+	questionnaire.setItems({"top", "smokingQuestions", "drinkingQuestions"});
+	questionnaire.setCompletionAction("extract.pdf");
+	insertLogical(questionnaire);
+	
+	Group group = new Group("top");
+	group.setLabel("Please answer the following questions:");
+	group.setItems({"smoke", "drink"});
+	insertLogical(group);
+end
+
+rule "top level questions"
+dialect "mvel" 
+then		
+	Question question = new Question("smoke");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Do you smoke?");
+	question.setPresentationStyles({"yesNoButtons"});
+	insertLogical(question);
+
+	question = new Question("drink");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Do you drink?");
+	question.setPresentationStyles({"yesNoButtons"});
+	insertLogical(question);
+end
+
+rule "smoking questions"
+dialect "mvel"
+when
+	Question(id == "smoke", answer == true);
+then
+	Group group = new Group("smokingQuestions");
+	group.setLabel("Tell me more about your smoking:");
+	group.setItems({"cigarettesPerDay", "smokingYears", "lungCancerHistory"});
+	insertLogical(group);
+
+	Question question = new Question("cigarettesPerDay");
+	question.setAnswerType(Question.TYPE_NUMBER);
+	question.setPreLabel("How many cigarettes do you smoke per day?");
+	insertLogical(question);
+
+	question = new Question("smokingYears");
+	question.setAnswerType(Question.TYPE_NUMBER);
+	question.setPreLabel("How many years have you been smoking?");
+	insertLogical(question);
+	
+	question = new Question("lungCancerHistory");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Is there a family history of lung cancer?");
+	question.setPresentationStyles({"radio"});
+	insertLogical(question);
+end
+
+rule "drinking questions"
+dialect "mvel"
+when
+	Question(id == "drink", answer == true);
+then
+	Group group = new Group("drinkingQuestions");
+	group.setLabel("Tell me more about your drinking:");
+	group.setItems({"drinksPerDay", "alcoholismHistory"});
+	insertLogical(group);
+
+	Question question = new Question("drinksPerDay");
+	question.setAnswerType(Question.TYPE_NUMBER);
+	question.setPreLabel("How many standard drinks do you have per day?");
+	insertLogical(question);
+
+	question = new Question("alcoholismHistory");
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Is there a family history of alcoholism?");
+	question.setPresentationStyles({"radio"});
+	insertLogical(question);
+end

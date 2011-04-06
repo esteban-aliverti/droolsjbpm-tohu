@@ -1,0 +1,20 @@
+<execution-results>
+	<result identifier="activeObjects">
+		<query-results>
+			<identifiers>
+				<identifier>object</identifier>
+			</identifiers>
+			<row>
+				<org.tohu.Questionnaire>
+					<id>questionnaire3</id>
+					<clientDateFormat>dd/mm/yyyy</clientDateFormat>
+					<active>true</active>
+					<label>All Done</label>
+					<invalidAnswers>false</invalidAnswers>
+					<enableActionValidation>false</enableActionValidation>	
+				</org.tohu.Questionnaire>
+				<fact-handle externalForm="questionnaire3Handle" />
+			</row>
+		</query-results>
+	</result>
+</execution-results>

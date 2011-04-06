@@ -1,0 +1,17 @@
+<change-set xmlns='http://drools.org/drools-5.0/change-set' xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+  xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd'>
+  <add>
+    <resource type="DRL" source="classpath:org/tohu/Active.drl" />
+    <resource type="DRL" source="classpath:org/tohu/Changes.drl" />
+    <resource type="DRL" source="classpath:org/tohu/Item.drl" />
+    <resource type="DRL" source="classpath:org/tohu/Queries.drl" />
+    <resource type="DRL" source="classpath:org/tohu/Question.drl" />
+    <resource type="DRL" source="classpath:org/tohu/ReadOnly.drl" />
+    <resource type="DRL" source="classpath:org/tohu/examples/loyalty/LoyaltyCard.drl" />
+    <resource type="DRL" source="classpath:org/tohu/examples/loyalty/contact/MainContactDetails.drl" />
+    <resource type="DRL" source="classpath:org/tohu/examples/loyalty/contact/JointContactDetails.drl" />
+    <resource type="DRL" source="classpath:org/tohu/examples/loyalty/demographic/DemographicDetails.drl" />
+    <resource type="DRL" source="classpath:org/tohu/examples/loyalty/others/OtherLoyaltyPrograms.drl" />
+    <resource type="DRL" source="classpath:org/tohu/examples/loyalty/others/OtherProgramDetails.drl" />
+  </add>
+</change-set>

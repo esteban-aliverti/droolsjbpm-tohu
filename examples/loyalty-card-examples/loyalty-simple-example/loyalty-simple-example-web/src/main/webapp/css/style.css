@@ -1,0 +1,153 @@
+html {
+	background-color: #fdeadb;
+	font-family: Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
+	font-size: 0.875em;
+	line-height: 1.286em;
+}
+
+div,p {
+	margin: 0;
+	padding: 0;
+}
+
+.Questionnaire {
+	font-weight: bold;
+}
+
+.Question {
+	clear: both;
+	margin: 1em 0;
+	width: 100%;
+	font-weight: normal;
+}
+
+.Question .preLabel, .preLabel {
+	float: left;
+	padding-right: 1em;
+	width: 28em;
+}
+
+.Controls {
+	text-align: center;
+	height: 22px;
+	margin-top: 3em;
+	width: 100%;
+}
+
+.Controls a:link,.Controls a:visited,.Controls a:hover,.Controls a:focus,.Controls a:active,a.button:link,a.button:visited,a.button:hover,a.button:focus,a.button:active
+	{
+	background: transparent url(../images/button_standard.gif) center center
+		no-repeat;
+	color: #F8E9D9;
+	height: 22px;
+	width: 135px;
+	line-height: 22px;
+	text-decoration: none;
+	text-align: center;
+	font-weight: normal;
+	display: block;
+}
+
+.Controls a:link,.Controls a:visited,.Controls a:hover,.Controls a:focus,.Controls a:active
+	{
+	margin: 0 auto;
+}
+
+.Controls a.disabled:link,.Controls a.disabled:visited,.Controls a.disabled:hover,.Controls a.disabled:focus,a.disabled:link,a.disabled:visited,a.disabled:hover,a.disabled:focus
+	{
+	color: black;
+}
+
+a.back {
+	float: left;
+}
+
+a.next {
+	float: right;
+}
+
+#bodyContent {
+	width: 80%;
+	margin: 0 auto;
+	padding: 1em;
+	background: #fff2ea;
+}
+
+.Group {
+	margin: 1em 0;
+	padding: 0;
+}
+
+.section {
+	min-height: 4em;
+}
+
+#PersonalDetails_label,#MainAddress_label,#PostalAddress_label {
+	width: 1em;
+	text-align: center;
+	color: yellow;
+	background: url(../images/background.png) no-repeat;
+	width: 60px;
+	height: 60px;
+	vertical-align: middle;
+	line-height: 60px;
+	font-size: 1.7em;
+	margin: 0;
+	padding: 0;
+	z-index: 5;
+}
+
+#PersonalDetails_items,#MainAddress_items,#PostalAddress_items {
+	margin: -60px 0 0 80px;
+	z-index: -5;
+	padding: 0 0 10px 0;
+	border-top: 1px solid #242424;
+}
+
+#LoyaltyQuestionnaire_label {
+	font-size: 1.5em;
+	margin: 0 auto;
+	width: 60%;
+}
+
+.row .GroupItems div {
+	display: inline;
+}
+
+.row .GroupItems .preLabel {
+	float: none;
+	display: inline;
+}
+
+.row .GroupItems .first .preLabel {
+	float: left;
+	display: block;
+}
+
+.postLabel {
+	padding: 0 0.5em 0 0;
+}
+
+.short .postLabel {
+	padding: 0;
+}
+
+.short input {
+	width: 4em;
+}
+
+.error input,
+.error select,
+.error .radioGroup {
+	border: 2px solid #ff8080;
+}
+
+.InvalidAnswer {
+	color: red;
+	font-weight: bold;
+	padding-left: 29.2em;
+}
+
+div.InvalidAnswer.requiredMissing {
+	display: none;
+}

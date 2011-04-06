@@ -1,0 +1,12 @@
+<change-set xmlns='http://drools.org/drools-5.0/change-set' xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+  xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd'>
+  <add>
+    <resource type="DRL" source="classpath:org/tohu/Active.drl" />
+    <resource type="DRL" source="classpath:org/tohu/Changes.drl" />
+    <resource type="DRL" source="classpath:org/tohu/Item.drl" />
+    <resource type="DRL" source="classpath:org/tohu/Queries.drl" />
+    <resource type="DRL" source="classpath:org/tohu/Question.drl" />
+    <resource type="DRL" source="classpath:org/tohu/ReadOnly.drl" />
+    <resource type="DRL" source="url:http://localhost:8085/drools-guvnor/org.drools.guvnor.Guvnor/package/org.tohu.examples.branching/LATEST.drl" />
+  </add>
+</change-set>

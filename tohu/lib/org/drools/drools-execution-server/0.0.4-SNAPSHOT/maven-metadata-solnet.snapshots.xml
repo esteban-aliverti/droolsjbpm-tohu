@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.drools</groupId>
+  <artifactId>drools-execution-server</artifactId>
+  <version>0.0.4-SNAPSHOT</version>
+</metadata>

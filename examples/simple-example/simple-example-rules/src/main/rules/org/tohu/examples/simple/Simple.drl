@@ -1,0 +1,114 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Damon Horrell
+ */
+package org.tohu.examples.simple
+
+import java.util.Calendar;
+
+import org.tohu.Group;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+
+/*
+ * Defines the questionnaire and initial questions which always appear.
+ * Note that this rule has no when clause so it fires once when the session is first created.
+ */
+rule "static"
+dialect "mvel"
+then
+	Questionnaire questionnaire = new Questionnaire("myQuestionnaire");
+	questionnaire.setLabel("Simple Example");
+	// items (inherited from Group) determines the order in which things are displayed
+	questionnaire.setItems({"name", "hello", "petType", "otherPetType", "petName"});
+ 	// completionAction specifies what to do when the user completes the questionnaire (i.e. clicks the Done button).
+ 	// The JQuery client interprets this as uri but other clients could use it in other ways.
+	questionnaire.setCompletionAction("extract.pdf");
+	insertLogical(questionnaire);
+	
+	Question question = new Question("name");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("What is your name?");
+	insertLogical(question);
+
+	MultipleChoiceQuestion multi = new MultipleChoiceQuestion("petType");
+	multi.setAnswerType(Question.TYPE_TEXT);
+	multi.setPreLabel("What type of pet do you have?");
+	multi.setPossibleAnswers({
+		new PossibleAnswer(null, "None"),
+		new PossibleAnswer("cat", "Cat"),
+		new PossibleAnswer("dog", "Dog"),
+		new PossibleAnswer("other", "Other")
+	});
+	insertLogical(multi);
+end
+
+/*
+ * If the user provides their name then we create a new note called hello.
+ * If they blank out their name then the note will disappear again automatically because of truth-maintenance.
+ */
+rule "hello"
+when
+	Question(id == "name", answered == true);
+then
+	Note note = new Note("hello");
+	insertLogical(note);
+end
+
+/*
+ * The actual text for the hello note is in a separate rule because we need it to fire whenever the name is changed,
+ * not just when we create the note (which only fires when the name is first specified).
+ */
+rule "hello data"
+no-loop
+when
+	Question(id == "name", name : answer);
+	hello : Note(id == "hello");
+then
+	hello.setLabel("Hello " + name);
+	update(hello);
+end
+
+/*
+ * This dependent question only appears for a specific data value. i.e. pet type is Other.
+ * It will disappear automatically via truth-maintenance.
+ */
+rule "other type of pet"
+when
+	Question(id == "petType", answer == "other");
+then
+	Question question = new Question("otherPetType");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Please specify:");
+	insertLogical(question);
+end
+
+/*
+ * This dependent question appears whenever the original question is non-null.
+ * It will disappear automatically via truth-maintenance.
+ */
+rule "pet's name"
+when
+	Question(id == "petType", answered == "true");
+then
+	Question question = new Question("petName");
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("What is your pet's name?");
+	insertLogical(question);
+end

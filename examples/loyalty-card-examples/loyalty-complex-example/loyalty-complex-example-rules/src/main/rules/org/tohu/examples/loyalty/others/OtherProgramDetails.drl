@@ -1,0 +1,200 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Derek Rendall
+ */
+package org.tohu.examples.loyalty.others
+
+import java.util.Calendar;
+
+import org.tohu.Answer;
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+
+import org.drools.spi.KnowledgeHelper;
+import org.drools.runtime.ClassObjectFilter;
+
+
+
+
+
+rule "Main BA Yes clicked"
+salience 15 
+no-loop
+when
+	q : Question(id == "budgetAirways");
+	a : Answer(questionId == q.id, value == "true");
+	questionnaire : Questionnaire(branched == false);
+	
+then
+	String groupId = q.getId() + "_details" ;
+
+	questionnaire.navigationBranch(new String[]{groupId}, groupId);
+	update(questionnaire);
+	
+	createDetails(drools, groupId, q.getId());		
+end
+
+
+rule "Main OF Yes clicked"
+salience 15 
+no-loop
+when
+	q : Question(id == "onlineFood");
+	a : Answer(questionId == q.id, value == "true");
+	questionnaire : Questionnaire(branched == false);
+	
+then
+	String groupId = q.getId() + "_details" ;
+
+	questionnaire.navigationBranch(new String[]{groupId}, groupId);
+	update(questionnaire);
+	
+	createDetails(drools, groupId, null);		
+end
+
+rule "Main MC Yes clicked"
+salience 15
+no-loop
+when
+	q : Question(id == "mochaCoffee");
+	a : Answer(questionId == q.id, value == "true");
+	questionnaire : Questionnaire(branched == false);
+	
+then
+	String groupId = q.getId() + "_details" ;
+
+	questionnaire.navigationBranch(new String[]{groupId}, groupId);
+	update(questionnaire);
+	
+	createDetails(drools, groupId, null);		
+end
+
+rule "Joint BA Yes clicked"
+salience 15
+no-loop
+when
+	q : Question(id == "jointBudgetAirways");
+	a : Answer(questionId == q.id, value == "true");
+	questionnaire : Questionnaire(branched == false);
+	
+then
+	String groupId = q.getId() + "_details" ;
+
+	questionnaire.navigationBranch(new String[]{groupId}, groupId);
+	update(questionnaire);
+	
+	createDetails(drools, groupId, q.getId());		
+end
+
+rule "Joint OF Yes clicked"
+salience 15
+no-loop
+when
+	q : Question(id == "jointOnlineFood");
+	a : Answer(questionId == q.id, value == "true");
+	questionnaire : Questionnaire(branched == false);
+	
+then
+	String groupId = q.getId() + "_details" ;
+
+	questionnaire.navigationBranch(new String[]{groupId}, groupId);
+	update(questionnaire);
+	
+	createDetails(drools, groupId, null);		
+end
+
+
+rule "Joint MC Yes clicked"
+salience 15
+no-loop
+when
+	q : Question(id == "jointMochaCoffee");
+	a : Answer(questionId == q.id, value == "true");
+	questionnaire : Questionnaire(branched == false);
+	
+then
+	String groupId = q.getId() + "_details" ;
+
+	questionnaire.navigationBranch(new String[]{groupId}, groupId);
+	update(questionnaire);
+	
+	createDetails(drools, groupId, null);		
+end
+
+
+function void createDetails(KnowledgeHelper drools, String pageId, String baQuestionId) {
+
+	Group page = new Group(pageId);
+	page.setLabel("What are the details of the other loyalty card");		
+	String groupId = pageId + "_group";
+	page.addItem(groupId);
+
+
+	Group group = new Group(groupId);
+	group.setLabel("8");
+	group.setPresentationStyles(new String[]{"section", "programDetails"});
+	
+	String prefix = groupId + "_";
+	String id1 = prefix + "membershipNumber";
+	String id2 = prefix + "membershipName";
+	String id3 = prefix + "specialOffers";
+	String id4 = prefix + "membershipType";
+	
+	group.addItem(id1);
+	group.addItem(id2);
+	group.addItem(id3);
+	if (baQuestionId != null) {
+		group.addItem(id4);
+	}
+	drools.insertLogical(group);
+	
+	Question question = new Question(id1);
+	group.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Membership Number");
+	drools.insertLogical(question);
+	
+	question = new Question(id2);
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Membership Name");
+	drools.insertLogical(question);
+	
+	question = new Question(id3);
+	question.setAnswerType(Question.TYPE_BOOLEAN);
+	question.setPreLabel("Do you want to receive combined special offers");
+	drools.insertLogical(question);
+	
+	if (baQuestionId != null) {
+		MultipleChoiceQuestion mcQuestion = new MultipleChoiceQuestion(id4);
+		mcQuestion.setAnswerType(Question.TYPE_TEXT);
+		mcQuestion.setPreLabel("Membership Type");
+		mcQuestion.setPossibleAnswers(new PossibleAnswer[]{
+			new PossibleAnswer("1", "Gold"),
+			new PossibleAnswer("2", "Silver"),
+			new PossibleAnswer("3", "Bronze")}
+		);
+		mcQuestion.setPresentationStyles(new String[]{ "radio" });
+		drools.insertLogical(mcQuestion);
+	}
+	
+	drools.insertLogical(page);
+
+}

@@ -1,0 +1,69 @@
+<execution-results>
+	<result identifier="changes">
+		<org.tohu.xml.ChangeCollector>
+			<delete>
+				<org.tohu.xml.ItemId>
+					<id>item_2_1</id>
+				</org.tohu.xml.ItemId>
+                <org.tohu.InvalidAnswer>
+                  <questionId>item_4_3</questionId>
+                  <reason>Item 4.3 Error 2</reason>
+                </org.tohu.InvalidAnswer>
+			</delete>
+			<create>
+				<entry>
+					<org.tohu.InvalidAnswer>
+						<questionId>item_3_1</questionId>
+						<type>ErrorType1</type>
+						<reason>Item 3.1 Error 1</reason>
+					</org.tohu.InvalidAnswer>
+					<fact-handle externalForm="item_3_1Error1Handle"/> 
+				</entry>
+				<entry>
+					<org.tohu.Question>
+						<id>item_3_1_1</id>
+						<presentationStyles>item_3_1_1Style</presentationStyles>
+						<active>true</active>
+						<preLabel>Item 3.1.1</preLabel>
+						<postLabel>Another Simple Text Field</postLabel>
+						<required>false</required>
+						<answerType>text</answerType>
+						<textAnswer>Item 3.1.1 Text</textAnswer>
+					</org.tohu.Question>
+					<fact-handle externalForm="item_3_1_1Handle"/> 
+				</entry>
+			</create>
+			<update>
+				<org.tohu.Question>
+					<id>item_3_2</id>
+					<presentationStyles>item_3_2Style1 item_3_2Style2</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 3.2a</preLabel>
+					<postLabel>Text Dropdown List</postLabel>
+					<required>true</required>
+					<answerType>text</answerType>
+					<textAnswer>second</textAnswer>
+					<possibleAnswers>first=Item 3.2.1,second=Item 3.2.2,third=Item 3.2.3</possibleAnswers>
+				</org.tohu.Question>
+				<org.tohu.Question>
+					<id>item_4_3</id>
+					<presentationStyles>radio,item_4_3Style</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 4.3</preLabel>
+					<postLabel>Boolean Radio Buttons</postLabel>
+					<required>true</required>
+					<answerType>boolean</answerType>
+					<booleanAnswer>false</booleanAnswer>
+				</org.tohu.Question>
+				<org.tohu.Group>
+					<id>group3</id>
+					<presentationStyles>group3Style</presentationStyles>
+					<active>true</active>
+					<label>Group 3</label>
+					<items>item_3_1,item_3_1_1,item_3_2,item_3_3</items>
+				</org.tohu.Group>
+			</update>
+		</org.tohu.xml.ChangeCollector>
+	</result>
+	<fact-handle identifier="changes" externalForm="changesHandle" />
+</execution-results> 

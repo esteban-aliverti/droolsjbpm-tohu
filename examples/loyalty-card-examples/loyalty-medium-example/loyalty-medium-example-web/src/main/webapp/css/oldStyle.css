@@ -1,0 +1,209 @@
+html {
+	background-color: #fdeadb;
+	font-family: Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
+	font-size: 0.875em;
+	line-height: 1.286em;
+}
+
+div,p {
+	margin: 0;
+	padding: 0;
+}
+
+
+/* progress bar presentation: */
+#progressindicator{
+	line-height:28px;
+}
+#progressbar {
+	float:right;
+	text-align:left;
+	width: 218px;
+	height: 14px;
+	background: transparent url(../images/progress-bar.gif) top left no-repeat;
+	padding: 7px 10px;
+}
+#progressbar p {
+	text-indent:-1000px;
+	width:0;
+	height:15px;
+	padding:0;
+	margin:0;
+	font-size:8px;
+	line-height:8px;
+	background: #6ac0e0 url(../images/bg_blue-bar.gif);
+}
+
+.title, .progress {
+	display: none;
+}
+
+/* level this bit at the bottom */
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
+
+
+.Questionnaire {
+	font-weight: bold;
+}
+
+.Question {
+	clear: both;
+	margin: 1em 0;
+	width: 100%;
+	font-weight: normal;
+}
+
+.Question .preLabel, .preLabel {
+	float: left;
+	padding-right: 1em;
+	width: 28em;
+}
+
+.Controls {
+	text-align: center;
+	height: 22px;
+	margin-top: 3em;
+	width: 100%;
+}
+
+.Controls {
+	height:22px;
+	margin:1em 0;
+	text-align:center;
+	width:100%;
+}
+.Controls a.disabled:link, .Controls a.disabled:visited, .Controls a.disabled:hover, .Controls a.disabled:focus, a.disabled:link, a.disabled:visited, a.disabled:hover, a.disabled:focus {
+	color:#000000;
+}
+.Controls a:link, .Controls a:visited, .Controls a:hover, .Controls a:focus, .Controls a:active {
+	margin:0 auto;
+}
+.Controls a:link, .Controls a:visited, .Controls a:hover, .Controls a:focus, .Controls a:active, a.Control:link, a.Control:visited, a.Control:hover, a.Control:focus, a.Control:active {
+	background:transparent url(../images/button_standard.gif) no-repeat scroll center center;
+	color:#F8E9D9;
+	display:block;
+	font-weight:400;
+	height:22px;
+	line-height:22px;
+	text-align:center;
+	text-decoration:none;
+	width:135px;
+}
+
+.Controls .previous {
+	float: left;
+}
+
+.Controls .next {
+	float: right;
+}
+
+
+a.back, a.next {
+	float:left;
+}
+
+#bodyContent {
+	width: 95%;
+	margin: 0 auto;
+	padding: 1em;
+	background: #fff2ea;
+}
+
+.Group {
+	margin: 1em 0;
+	padding: 0;
+}
+
+.section {
+	min-height: 4em;
+}
+
+#PersonalDetails_label,#MainAddress_label,#PostalAddress_label,#IncomeDetails_label,#Household_label,#PromotionalMaterial_label {
+	width: 1em;
+	text-align: center;
+	color: yellow;
+	background: url(../images/background.png) no-repeat;
+	width: 60px;
+	height: 60px;
+	vertical-align: middle;
+	line-height: 60px;
+	font-size: 1.7em;
+	margin: 0;
+	padding: 0;
+	z-index: 5;
+}
+
+#PersonalDetails_items,#MainAddress_items,#PostalAddress_items,#IncomeDetails_items,#Household_items,#PromotionalMaterial_items {
+	margin: -60px 0 0 80px;
+	z-index: -5;
+	padding: 0 0 10px 0;
+	border-top: 1px solid #242424;
+}
+
+#LoyaltyQuestionnaire_label {
+	font-size: 1.5em;
+	margin: 0 auto;
+	width: 60%;
+}
+
+.row .GroupItems div {
+	display: inline;
+}
+
+.row .GroupItems .preLabel {
+	float: none;
+	display: inline;
+}
+
+.row .GroupItems .first .preLabel {
+	float: left;
+	display: block;
+}
+
+.postLabel {
+	padding: 0 0.5em 0 0;
+}
+
+.short .postLabel {
+	padding: 0;
+}
+
+.short input {
+	width: 4em;
+}
+
+.error input,
+.error select,
+.error .radioGroup {
+	border: 2px solid #ff8080;
+}
+
+.InvalidAnswer {
+	color: red;
+	font-weight: bold;
+	padding-left: 29.2em;
+}
+
+div.InvalidAnswer.requiredMissing {
+	display: none;
+}

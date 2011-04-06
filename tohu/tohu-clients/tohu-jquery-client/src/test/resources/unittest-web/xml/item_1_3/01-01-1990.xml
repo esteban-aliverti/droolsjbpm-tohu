@@ -1,0 +1,23 @@
+<execution-results>
+	<result identifier="changes">
+		<org.tohu.xml.ChangeCollector>
+			<delete>
+			</delete>
+			<create>
+			</create>
+			<update>
+				<org.tohu.Question>
+					<id>item_1_3</id>
+					<presentationStyles>item_1_3Style,datepicker</presentationStyles>
+					<active>true</active>
+					<preLabel>Item 1.3</preLabel>
+					<postLabel>Date Field with Picker</postLabel>
+					<required>true</required>
+					<answerType>date</answerType>
+					<dateAnswer>1990-01-02</dateAnswer>
+				</org.tohu.Question>
+			</update>
+		</org.tohu.xml.ChangeCollector>
+	</result>
+	<fact-handle identifier="changes" externalForm="changesHandle" />
+</execution-results> 

@@ -1,0 +1,70 @@
+.Questionnaire p {
+	font-weight: bold;
+	font-size: 1.5em;
+}
+
+.Group p {
+	font-weight: bold;
+	font-size: 1em;
+}
+
+.Question {
+	clear: both;
+	margin: 1em 0;
+	width: 100%;
+	font-weight: normal;
+}
+
+.Question .preLabel {
+	float: left;
+	padding-right: 1em;
+	width: 20em;
+}
+
+.Controls,
+.yesNoControls {
+	text-align: center;
+	height: 22px;
+	margin-top: 1em;
+	width: 100%;
+}
+
+.Controls a:link,.Controls a:visited,.Controls a:hover,.Controls a:focus,.Controls a:active,
+.yesNoControls a:link,.yesNoControls a:visited,.yesNoControls a:hover,.yesNoControls a:focus,.yesNoControls a:active
+{
+	background: transparent url(../images/button_standard.gif) center center
+		no-repeat;
+	color: #F8E9D9;
+	height: 22px;
+	width: 85px;
+	line-height: 22px;
+	text-decoration: none;
+	text-align: center;
+	font-weight: normal;
+	display: block;
+	float: left;
+	margin: 0 0.2em;
+}
+
+.Controls a.disabled:link,.Controls a.disabled:visited,.Controls a.disabled:hover,.Controls a.disabled:focus,a.disabled:link,a.disabled:visited,a.disabled:hover,a.disabled:focus
+	{
+	color: black;
+}
+
+.yesNoButtons {
+	margin: 0.5em 0;
+}
+
+.yesNoButtons input {
+	display: none;
+}
+
+.yesNoButtons .yesNoControls a {
+	display: inline-block;
+	float: none;
+}
+
+.yesNoButtons .answer {
+	width: 2em;
+	display: inline-block;
+}

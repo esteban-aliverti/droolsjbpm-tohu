@@ -1,0 +1,103 @@
+/*
+ * Copyright 2009 Solnet Solutions Limited (http://www.solnetsolutions.co.nz/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Derek Rendall
+ */
+package org.tohu.examples.loyalty.contact
+
+import java.util.Calendar;
+
+import org.tohu.Group;
+import org.tohu.InvalidAnswer;
+import org.tohu.MultipleChoiceQuestion;
+import org.tohu.MultipleChoiceQuestion.PossibleAnswer;
+import org.tohu.Note;
+import org.tohu.Question;
+import org.tohu.Questionnaire;
+
+
+rule "AddJointContactDetailsPage"
+dialect "mvel"
+salience 100
+no-loop
+when
+	Question(id == "applicationType", answer == "2")
+	questionnaire : Questionnaire(branched == false, items not contains "JointContactDetailsPage");
+then
+	questionnaire.appendItem("JointContactDetailsPage", questionnaire.getActiveItem());
+	update(questionnaire);
+end
+
+rule "JointContactDetailsPage"
+dialect "mvel"
+when
+	Question(id == "applicationType", answer == "2")
+then
+	Group page = new Group("JointContactDetailsPage");
+	page.setLabel("Please specify the details for the joint applicant.");		
+
+	Group personalDetails = new Group("JointPersonalDetails");
+	personalDetails.setLabel("1+");
+	page.addItem(personalDetails.getId());
+	personalDetails.setPresentationStyles({"section"});
+	insertLogical(personalDetails);		
+
+	Question question = new Question("extraGivenNames");
+	personalDetails.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Given or first names");
+	insertLogical(question);
+
+	question = new Question("extraSurname");
+	personalDetails.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Family name");
+	insertLogical(question);
+
+	question = new Question("extraDOB");
+	personalDetails.addItem(question.getId());
+	question.setPresentationStyles({"datepicker"});
+	question.setAnswerType(Question.TYPE_DATE);
+	question.setPreLabel("Date of birth");
+	insertLogical(question);
+
+	question = new Question("extraEmail");
+	personalDetails.addItem(question.getId());
+	question.setAnswerType("text.email");
+	question.setPreLabel("Email");
+	insertLogical(question);
+
+	question = new Question("extraPhone");
+	personalDetails.addItem(question.getId());
+	question.setAnswerType(Question.TYPE_TEXT);
+	question.setPreLabel("Phone");
+	insertLogical(question);
+	
+	insertLogical(page);
+end
+
+rule "RemoveJointContactDetailsPage"
+dialect "mvel"
+salience 100
+no-loop
+when
+	Question(id == "applicationType", answer == "1")
+	questionnaire : Questionnaire(items contains "JointContactDetailsPage");
+then
+	questionnaire.removeItem("JointContactDetailsPage");
+	update(questionnaire);
+end
+
+
