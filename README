@@ -1,0 +1,11 @@
+The purpose of this project is to migrate Tohu (http://community.jboss.org/wiki/Tohu) to the latest version of Drools and Drools-Camel-Server.
+
+2011-04-06:
+-It is possible to run simple-example using drools-camel-server. The steps needed to do this are:
+    1.- Download drools-server directory (https://github.com/esteban-aliverti/droolsjbpm-tohu/tree/master/drools-server) and deploy it in a webserver (I only tried with tomcat 7, but it should work with others)
+    2.- Download tohu: https://github.com/esteban-aliverti/droolsjbpm-tohu/tree/master/tohu
+    3.- Compile tohu: mvn clean install -DskipTests=true
+    4.- Download simple-example: https://github.com/esteban-aliverti/droolsjbpm-tohu/tree/master/examples/simple-example
+    5.- Compile simple-example-web: mvn clean install -DskipTests=true
+    6.- Copy target/simple-example-web directory to your websever web directory. 
+    7.- Start your webserver and browse to: http://localhost:8080/simple-example-web (the pdf part doesn't work :P )
